@@ -1,46 +1,20 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, KeyboardEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { uploadImage } from '@/lib/upload';
 import { Button } from '@/components/ui/button';
 import ImageUpload from '@/components/ImageUpload';
-import { ArrowLeft, Plus, ChevronUp, ChevronDown, Trash2, Type, AlignLeft, ImageIcon } from 'lucide-react';
+import BlockInserter from '@/components/BlockInserter';
+import BlockTypeSwitcher from '@/components/BlockTypeSwitcher';
+import { ArrowLeft, Plus, ChevronUp, ChevronDown, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
+import type { Database } from '@/integrations/supabase/types';
 
 type Case = Tables<'cases'>;
 type Block = Tables<'blocks'>;
-
-function BlockInserter({ onAdd }: { onAdd: (type: Block['type']) => void }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="relative flex items-center justify-center h-0 group/inserter">
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="absolute z-10 p-1 rounded-full border border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all opacity-0 group-hover/inserter:opacity-100 scale-90 group-hover/inserter:scale-100"
-        >
-          <Plus className="h-3.5 w-3.5" />
-        </button>
-      )}
-      {open && (
-        <div className="absolute z-10 flex items-center gap-1 bg-background border border-border rounded-lg px-1 py-1 shadow-sm">
-          <button onClick={() => { onAdd('heading'); setOpen(false); }} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
-            <Type className="h-3.5 w-3.5" /> Heading
-          </button>
-          <button onClick={() => { onAdd('text'); setOpen(false); }} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
-            <AlignLeft className="h-3.5 w-3.5" /> Text
-          </button>
-          <button onClick={() => { onAdd('image'); setOpen(false); }} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
-            <ImageIcon className="h-3.5 w-3.5" /> Image
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
+type BlockType = Database['public']['Enums']['block_type'];
 
 export default function CaseEditorPage() {
   const { id } = useParams<{ id: string }>();
@@ -51,6 +25,7 @@ export default function CaseEditorPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const titleRef = useRef<HTMLTextAreaElement>(null);
+  const blockRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
 
   useEffect(() => {
     if (!id || !user) return;
@@ -84,10 +59,9 @@ export default function CaseEditorPage() {
     setSaving(false);
   };
 
-  const insertBlockAt = async (type: Block['type'], afterIndex: number) => {
+  const insertBlockAt = async (type: BlockType, afterIndex: number) => {
     if (!id) return;
     const newOrder = afterIndex + 1;
-    // Shift blocks after insertion point
     const shifted = blocks.map((b, i) =>
       i >= newOrder ? { ...b, sort_order: b.sort_order + 1 } : b
     );
@@ -100,14 +74,18 @@ export default function CaseEditorPage() {
     if (data) {
       const updated = [...shifted.slice(0, newOrder), data, ...shifted.slice(newOrder)];
       setBlocks(updated.map((b, i) => ({ ...b, sort_order: i })));
-      // Update sort orders in DB
       for (const b of shifted.filter((_, i) => i >= newOrder)) {
         await supabase.from('blocks').update({ sort_order: b.sort_order }).eq('id', b.id);
       }
+      // Focus new block
+      setTimeout(() => {
+        const el = blockRefs.current.get(data.id);
+        el?.focus();
+      }, 50);
     }
   };
 
-  const addBlock = async (type: Block['type']) => {
+  const addBlock = async (type: BlockType) => {
     if (!id) return;
     const maxOrder = blocks.length > 0 ? Math.max(...blocks.map((b) => b.sort_order)) : -1;
     const { data, error } = await supabase
@@ -116,12 +94,23 @@ export default function CaseEditorPage() {
       .select()
       .single();
     if (error) toast.error('Failed to add block');
-    else if (data) setBlocks((prev) => [...prev, data]);
+    else if (data) {
+      setBlocks((prev) => [...prev, data]);
+      setTimeout(() => {
+        const el = blockRefs.current.get(data.id);
+        el?.focus();
+      }, 50);
+    }
   };
 
   const updateBlock = async (blockId: string, content: string) => {
     setBlocks((prev) => prev.map((b) => (b.id === blockId ? { ...b, content } : b)));
     await supabase.from('blocks').update({ content }).eq('id', blockId);
+  };
+
+  const switchBlockType = async (blockId: string, newType: BlockType) => {
+    setBlocks((prev) => prev.map((b) => (b.id === blockId ? { ...b, type: newType } : b)));
+    await supabase.from('blocks').update({ type: newType }).eq('id', blockId);
   };
 
   const deleteBlock = async (blockId: string) => {
@@ -161,6 +150,13 @@ export default function CaseEditorPage() {
   const autoResizeTextarea = (el: HTMLTextAreaElement) => {
     el.style.height = 'auto';
     el.style.height = el.scrollHeight + 'px';
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>, block: Block, index: number) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      insertBlockAt('text', index);
+    }
   };
 
   if (loading) return <div className="text-sm text-muted-foreground p-8">Loading…</div>;
@@ -204,52 +200,45 @@ export default function CaseEditorPage() {
           <div className="relative group/cover">
             <img src={caseData.cover_image_url} alt="" className="w-full rounded-lg" />
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover/cover:opacity-100 transition-opacity rounded-lg">
-              <ImageUpload
-                onUpload={handleCoverUpload}
-                loading={saving}
-                className="w-full h-full"
-              />
+              <ImageUpload onUpload={handleCoverUpload} loading={saving} className="w-full h-full" />
             </div>
           </div>
         ) : (
-          <ImageUpload
-            onUpload={handleCoverUpload}
-            loading={saving}
-            className="aspect-[16/9] border border-dashed border-border rounded-lg"
-          />
+          <ImageUpload onUpload={handleCoverUpload} loading={saving} className="aspect-[16/9] border border-dashed border-border rounded-lg" />
         )}
       </div>
 
       {/* Blocks */}
-      <div className="space-y-0">
+      <div>
+        {/* Inserter before first block */}
+        <BlockInserter onAdd={(type) => insertBlockAt(type, -1)} />
+
         {blocks.map((block, index) => (
           <div key={block.id}>
-            {/* Inserter above each block */}
-            <div className="py-2">
-              <BlockInserter onAdd={(type) => insertBlockAt(type, index - 1)} />
-            </div>
-
             {/* Block */}
-            <div className="group/block relative pl-10">
-              {/* Left controls */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-0.5 opacity-0 group-hover/block:opacity-100 transition-opacity">
+            <div className="group/block relative">
+              {/* Right controls */}
+              <div className="absolute -right-10 top-0 flex flex-col items-center gap-0.5 opacity-0 group-hover/block:opacity-100 transition-opacity">
+                <BlockTypeSwitcher currentType={block.type} onSwitch={(t) => switchBlockType(block.id, t)} />
                 <button onClick={() => moveBlock(index, -1)} disabled={index === 0} className="p-1 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
                   <ChevronUp className="h-4 w-4" />
                 </button>
-                <button onClick={() => deleteBlock(block.id)} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
                 <button onClick={() => moveBlock(index, 1)} disabled={index === blocks.length - 1} className="p-1 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
                   <ChevronDown className="h-4 w-4" />
+                </button>
+                <button onClick={() => deleteBlock(block.id)} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+                  <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
 
               {/* Content */}
               {block.type === 'heading' && (
                 <textarea
+                  ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
                   value={block.content}
                   onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                   onFocus={(e) => autoResizeTextarea(e.target)}
+                  onKeyDown={(e) => handleKeyDown(e, block, index)}
                   placeholder="Heading"
                   rows={1}
                   className="w-full text-xl md:text-2xl font-semibold leading-snug bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/40"
@@ -257,9 +246,11 @@ export default function CaseEditorPage() {
               )}
               {block.type === 'text' && (
                 <textarea
+                  ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
                   value={block.content}
                   onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                   onFocus={(e) => autoResizeTextarea(e.target)}
+                  onKeyDown={(e) => handleKeyDown(e, block, index)}
                   placeholder="Write something…"
                   rows={1}
                   className="w-full text-base leading-relaxed bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/40"
@@ -276,26 +267,24 @@ export default function CaseEditorPage() {
                 )
               )}
             </div>
+
+            {/* Inserter after each block */}
+            <BlockInserter onAdd={(type) => insertBlockAt(type, index)} />
           </div>
         ))}
 
-        {/* Inserter after last block */}
-        <div className="py-2">
-          <BlockInserter onAdd={(type) => addBlock(type)} />
-        </div>
+        {/* Empty state */}
+        {blocks.length === 0 && (
+          <div className="flex items-center justify-center gap-3 py-12 text-muted-foreground">
+            <Plus className="h-4 w-4" />
+            <button onClick={() => addBlock('heading')} className="text-sm hover:text-foreground transition-colors">Heading</button>
+            <span className="text-border">·</span>
+            <button onClick={() => addBlock('text')} className="text-sm hover:text-foreground transition-colors">Text</button>
+            <span className="text-border">·</span>
+            <button onClick={() => addBlock('image')} className="text-sm hover:text-foreground transition-colors">Image</button>
+          </div>
+        )}
       </div>
-
-      {/* Bottom add buttons (always visible fallback) */}
-      {blocks.length === 0 && (
-        <div className="flex items-center gap-2 pt-4 text-muted-foreground">
-          <Plus className="h-4 w-4" />
-          <button onClick={() => addBlock('heading')} className="text-sm hover:text-foreground transition-colors">Heading</button>
-          <span className="text-border">·</span>
-          <button onClick={() => addBlock('text')} className="text-sm hover:text-foreground transition-colors">Text</button>
-          <span className="text-border">·</span>
-          <button onClick={() => addBlock('image')} className="text-sm hover:text-foreground transition-colors">Image</button>
-        </div>
-      )}
     </div>
   );
 }
