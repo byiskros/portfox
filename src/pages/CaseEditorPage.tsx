@@ -216,9 +216,47 @@ export default function CaseEditorPage() {
         {blocks.map((block, index) => (
           <div key={block.id}>
             {/* Block */}
-            <div className="group/block relative">
-              {/* Right controls — horizontal row, vertically centered */}
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 opacity-70 group-hover/block:opacity-100 transition-opacity">
+            <div className="group/block flex items-start gap-3">
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                {block.type === 'heading' && (
+                  <textarea
+                    ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
+                    value={block.content}
+                    onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
+                    onFocus={(e) => autoResizeTextarea(e.target)}
+                    onKeyDown={(e) => handleKeyDown(e, block, index)}
+                    placeholder="Heading"
+                    rows={1}
+                    className="w-full text-xl md:text-2xl font-semibold leading-snug bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/40"
+                  />
+                )}
+                {block.type === 'text' && (
+                  <textarea
+                    ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
+                    value={block.content}
+                    onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
+                    onFocus={(e) => autoResizeTextarea(e.target)}
+                    onKeyDown={(e) => handleKeyDown(e, block, index)}
+                    placeholder="Write something…"
+                    rows={1}
+                    className="w-full text-base leading-relaxed bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/40"
+                  />
+                )}
+                {block.type === 'image' && (
+                  block.content ? (
+                    <img src={block.content} alt="" className="w-full rounded-lg" />
+                  ) : (
+                    <ImageUpload
+                      onUpload={(file) => handleBlockImageUpload(block.id, file)}
+                      className="aspect-[16/9] border border-dashed border-border rounded-lg"
+                    />
+                  )
+                )}
+              </div>
+
+              {/* Controls — hover only */}
+              <div className="flex items-center gap-1 pt-0.5 shrink-0 opacity-0 group-hover/block:opacity-100 transition-opacity">
                 <BlockTypeSwitcher currentType={block.type} onSwitch={(t) => switchBlockType(block.id, t)} />
                 <button onClick={() => moveBlock(index, -1)} disabled={index === 0} className="p-1 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
                   <ChevronUp className="h-[18px] w-[18px]" />
@@ -229,44 +267,6 @@ export default function CaseEditorPage() {
                 <button onClick={() => deleteBlock(block.id)} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
                   <Trash2 className="h-4 w-4" />
                 </button>
-              </div>
-
-              {/* Content — pr-24 to avoid overlapping controls */}
-              <div className="pr-24">
-              {block.type === 'heading' && (
-                <textarea
-                  ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
-                  value={block.content}
-                  onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
-                  onFocus={(e) => autoResizeTextarea(e.target)}
-                  onKeyDown={(e) => handleKeyDown(e, block, index)}
-                  placeholder="Heading"
-                  rows={1}
-                  className="w-full text-xl md:text-2xl font-semibold leading-snug bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/40"
-                />
-              )}
-              {block.type === 'text' && (
-                <textarea
-                  ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
-                  value={block.content}
-                  onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
-                  onFocus={(e) => autoResizeTextarea(e.target)}
-                  onKeyDown={(e) => handleKeyDown(e, block, index)}
-                  placeholder="Write something…"
-                  rows={1}
-                  className="w-full text-base leading-relaxed bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/40"
-                />
-              )}
-              {block.type === 'image' && (
-                block.content ? (
-                  <img src={block.content} alt="" className="w-full rounded-lg" />
-                ) : (
-                  <ImageUpload
-                    onUpload={(file) => handleBlockImageUpload(block.id, file)}
-                    className="aspect-[16/9] border border-dashed border-border rounded-lg"
-                  />
-                )
-              )}
               </div>
             </div>
 
