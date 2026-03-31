@@ -103,7 +103,7 @@ export default function PortfolioPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 border-b border-border mb-6">
+        <div className="flex justify-center gap-4 border-b border-border mb-8">
           <button
             onClick={() => setActiveTab('projects')}
             className={`pb-2 text-sm transition-colors ${activeTab === 'projects' ? 'text-foreground border-b-2 border-foreground font-medium' : 'text-muted-foreground hover:text-foreground'}`}
@@ -122,9 +122,9 @@ export default function PortfolioPage() {
         {activeTab === 'projects' && (
           <div>
             {cases.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No published projects yet.</p>
+              <p className="text-sm text-muted-foreground text-center">No published projects yet.</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {cases.map((c) => (
                   <div
                     key={c.id}
