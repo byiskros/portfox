@@ -231,7 +231,8 @@ export default function CaseEditorPage() {
                 </button>
               </div>
 
-              {/* Content */}
+              {/* Content — pr-24 to avoid overlapping controls */}
+              <div className="pr-24">
               {block.type === 'heading' && (
                 <textarea
                   ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
