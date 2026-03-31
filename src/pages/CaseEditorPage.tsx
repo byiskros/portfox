@@ -125,46 +125,50 @@ export default function CaseEditorPage() {
         </Button>
       </div>
 
-      <div className="space-y-4">
-        <div className="rounded-lg bg-secondary/50 p-4">
-          <Input
-            value={caseData.title}
-            onChange={(e) => setCaseData((prev) => prev ? { ...prev, title: e.target.value } : prev)}
-            onBlur={() => saveCase({ title: caseData.title })}
-            placeholder="Project title"
-            className="text-lg font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent"
-          />
+      <div className="space-y-5">
+        <div className="rounded-xl bg-[hsl(0_0%_97%)] p-4 md:p-5">
+          <div className="rounded-lg bg-background p-3 md:p-4">
+            <Input
+              value={caseData.title}
+              onChange={(e) => setCaseData((prev) => prev ? { ...prev, title: e.target.value } : prev)}
+              onBlur={() => saveCase({ title: caseData.title })}
+              placeholder="Project title"
+              className="text-lg font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent"
+            />
+          </div>
         </div>
 
         <div>
           <p className="text-xs text-muted-foreground mb-2">Cover image</p>
-          <div className="rounded-lg bg-secondary/50 p-4">
-            <ImageUpload
-              onUpload={handleCoverUpload}
-              loading={saving}
-              preview={caseData.cover_image_url}
-              className="aspect-[16/9]"
-            />
+          <div className="rounded-xl bg-[hsl(0_0%_97%)] p-4 md:p-5">
+            <div className="rounded-lg bg-background p-3 md:p-4">
+              <ImageUpload
+                onUpload={handleCoverUpload}
+                loading={saving}
+                preview={caseData.cover_image_url}
+                className="aspect-[16/9]"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         <p className="text-xs text-muted-foreground">Blocks</p>
         {blocks.map((block, index) => (
-          <div key={block.id} className="group flex gap-2">
-            <div className="flex flex-col gap-0.5 pt-3 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={() => moveBlock(index, -1)} disabled={index === 0} className="p-0.5 hover:bg-secondary rounded disabled:opacity-20">
-                <ChevronUp className="h-3 w-3" />
+          <div key={block.id} className="group relative rounded-xl bg-[hsl(0_0%_97%)] hover:bg-[hsl(0_0%_95%)] transition-colors p-4 md:p-5">
+            <div className="absolute right-3 top-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onClick={() => moveBlock(index, -1)} disabled={index === 0} className="p-1.5 rounded-md hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
+                <ChevronUp className="h-3.5 w-3.5" />
               </button>
-              <button onClick={() => moveBlock(index, 1)} disabled={index === blocks.length - 1} className="p-0.5 hover:bg-secondary rounded disabled:opacity-20">
-                <ChevronDown className="h-3 w-3" />
+              <button onClick={() => moveBlock(index, 1)} disabled={index === blocks.length - 1} className="p-1.5 rounded-md hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
+                <ChevronDown className="h-3.5 w-3.5" />
               </button>
-              <button onClick={() => deleteBlock(block.id)} className="p-0.5 hover:bg-secondary rounded text-destructive">
-                <Trash2 className="h-3 w-3" />
+              <button onClick={() => deleteBlock(block.id)} className="p-1.5 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+                <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>
-            <div className="flex-1 rounded-lg bg-secondary/50 p-4">
+            <div className="rounded-lg bg-background p-3 md:p-4">
               {block.type === 'heading' && (
                 <Input
                   value={block.content}
@@ -183,7 +187,7 @@ export default function CaseEditorPage() {
               )}
               {block.type === 'image' && (
                 block.content ? (
-                  <img src={block.content} alt="" className="rounded-lg max-w-full" />
+                  <img src={block.content} alt="" className="rounded-md max-w-full" />
                 ) : (
                   <ImageUpload
                     onUpload={(file) => handleBlockImageUpload(block.id, file)}
