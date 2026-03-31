@@ -46,7 +46,7 @@ export default function ResumePage() {
   if (loading) return <div className="text-sm text-muted-foreground">Loading…</div>;
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6 max-w-3xl">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-foreground">Resume</h1>
         <Button onClick={save} size="sm" disabled={saving}>

@@ -60,12 +60,12 @@ export default function PortfolioPage() {
   if (selectedCase) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-8">
           <button onClick={closeCase} className="text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
             ← Back to portfolio
           </button>
           <h1 className="text-2xl font-semibold text-foreground mb-8">{caseTitle}</h1>
-          <div className="space-y-6">
+          <div className="max-w-[720px] space-y-6">
             {caseBlocks.map((block) => (
               <div key={block.id}>
                 {block.type === 'heading' && <h2 className="text-xl font-semibold text-foreground">{block.content}</h2>}
@@ -81,31 +81,29 @@ export default function PortfolioPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12">
         {/* Header */}
-        <div className="flex items-start gap-4 mb-8">
+        <div className="flex flex-col items-center text-center mb-10">
           {profile.avatar_url && (
-            <img src={profile.avatar_url} alt="" className="w-16 h-16 rounded-full object-cover shrink-0" />
+            <img src={profile.avatar_url} alt="" className="w-20 h-20 rounded-full object-cover mb-4" />
           )}
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold text-foreground">{profile.name || 'Unnamed'}</h1>
-            {profile.role && <p className="text-sm text-muted-foreground">{profile.role}</p>}
-            {profile.bio && <p className="text-sm text-foreground/70 mt-2">{profile.bio}</p>}
-            {profile.links && profile.links.length > 0 && (
-              <div className="flex flex-wrap gap-3 mt-3">
-                {profile.links.map((link, i) => (
-                  <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-                    <ExternalLink className="h-3 w-3" />
-                    {new URL(link).hostname}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
+          <h1 className="text-xl font-semibold text-foreground">{profile.name || 'Unnamed'}</h1>
+          {profile.role && <p className="text-sm text-muted-foreground mt-1">{profile.role}</p>}
+          {profile.bio && <p className="text-sm text-foreground/70 mt-3 max-w-md">{profile.bio}</p>}
+          {profile.links && profile.links.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-3 mt-4">
+              {profile.links.map((link, i) => (
+                <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+                  <ExternalLink className="h-3 w-3" />
+                  {new URL(link).hostname}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 border-b border-border mb-6">
+        <div className="flex justify-center gap-4 border-b border-border mb-8">
           <button
             onClick={() => setActiveTab('projects')}
             className={`pb-2 text-sm transition-colors ${activeTab === 'projects' ? 'text-foreground border-b-2 border-foreground font-medium' : 'text-muted-foreground hover:text-foreground'}`}
@@ -124,9 +122,9 @@ export default function PortfolioPage() {
         {activeTab === 'projects' && (
           <div>
             {cases.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No published projects yet.</p>
+              <p className="text-sm text-muted-foreground text-center">No published projects yet.</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {cases.map((c) => (
                   <div
                     key={c.id}
@@ -147,7 +145,7 @@ export default function PortfolioPage() {
         )}
 
         {activeTab === 'resume' && (
-          <div>
+          <div className="max-w-[720px] mx-auto">
             {resume ? (
               <div className="text-sm text-foreground/80 whitespace-pre-wrap leading-relaxed">{resume}</div>
             ) : (

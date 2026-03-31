@@ -110,7 +110,7 @@ export default function CaseEditorPage() {
   if (!caseData) return <div className="text-sm text-muted-foreground">Not found</div>;
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between">
         <button onClick={() => navigate('/dashboard')} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />
@@ -126,30 +126,34 @@ export default function CaseEditorPage() {
       </div>
 
       <div className="space-y-4">
-        <Input
-          value={caseData.title}
-          onChange={(e) => setCaseData((prev) => prev ? { ...prev, title: e.target.value } : prev)}
-          onBlur={() => saveCase({ title: caseData.title })}
-          placeholder="Project title"
-          className="text-lg font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent"
-        />
+        <div className="rounded-lg bg-secondary/50 p-4">
+          <Input
+            value={caseData.title}
+            onChange={(e) => setCaseData((prev) => prev ? { ...prev, title: e.target.value } : prev)}
+            onBlur={() => saveCase({ title: caseData.title })}
+            placeholder="Project title"
+            className="text-lg font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent"
+          />
+        </div>
 
         <div>
           <p className="text-xs text-muted-foreground mb-2">Cover image</p>
-          <ImageUpload
-            onUpload={handleCoverUpload}
-            loading={saving}
-            preview={caseData.cover_image_url}
-            className="aspect-[16/9]"
-          />
+          <div className="rounded-lg bg-secondary/50 p-4">
+            <ImageUpload
+              onUpload={handleCoverUpload}
+              loading={saving}
+              preview={caseData.cover_image_url}
+              className="aspect-[16/9]"
+            />
+          </div>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <p className="text-xs text-muted-foreground">Blocks</p>
         {blocks.map((block, index) => (
           <div key={block.id} className="group flex gap-2">
-            <div className="flex flex-col gap-0.5 pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex flex-col gap-0.5 pt-3 opacity-0 group-hover:opacity-100 transition-opacity">
               <button onClick={() => moveBlock(index, -1)} disabled={index === 0} className="p-0.5 hover:bg-secondary rounded disabled:opacity-20">
                 <ChevronUp className="h-3 w-3" />
               </button>
@@ -160,7 +164,7 @@ export default function CaseEditorPage() {
                 <Trash2 className="h-3 w-3" />
               </button>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 rounded-lg bg-secondary/50 p-4">
               {block.type === 'heading' && (
                 <Input
                   value={block.content}
