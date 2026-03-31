@@ -14,7 +14,134 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      blocks: {
+        Row: {
+          case_id: string
+          content: string
+          created_at: string
+          id: string
+          sort_order: number
+          type: Database["public"]["Enums"]["block_type"]
+        }
+        Insert: {
+          case_id: string
+          content?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          type: Database["public"]["Enums"]["block_type"]
+        }
+        Update: {
+          case_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          type?: Database["public"]["Enums"]["block_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blocks_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cases: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          id: string
+          status: Database["public"]["Enums"]["case_status"]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["case_status"]
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["case_status"]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          email: string | null
+          id: string
+          links: string[] | null
+          name: string | null
+          role: string | null
+          slug: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          links?: string[] | null
+          name?: string | null
+          role?: string | null
+          slug?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          links?: string[] | null
+          name?: string | null
+          role?: string | null
+          slug?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resumes: {
+        Row: {
+          content: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +150,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      block_type: "heading" | "text" | "image"
+      case_status: "draft" | "published"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +278,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      block_type: ["heading", "text", "image"],
+      case_status: ["draft", "published"],
+    },
   },
 } as const
