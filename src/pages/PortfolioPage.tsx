@@ -60,12 +60,12 @@ export default function PortfolioPage() {
   if (selectedCase) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-8">
           <button onClick={closeCase} className="text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
             ← Back to portfolio
           </button>
           <h1 className="text-2xl font-semibold text-foreground mb-8">{caseTitle}</h1>
-          <div className="space-y-6">
+          <div className="max-w-[720px] space-y-6">
             {caseBlocks.map((block) => (
               <div key={block.id}>
                 {block.type === 'heading' && <h2 className="text-xl font-semibold text-foreground">{block.content}</h2>}
