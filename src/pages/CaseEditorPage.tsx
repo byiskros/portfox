@@ -217,17 +217,17 @@ export default function CaseEditorPage() {
           <div key={block.id}>
             {/* Block */}
             <div className="group/block relative">
-              {/* Right controls */}
-              <div className="absolute -right-10 top-0 flex flex-col items-center gap-0.5 opacity-0 group-hover/block:opacity-100 transition-opacity">
+              {/* Right controls — horizontal row, vertically centered */}
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 opacity-70 group-hover/block:opacity-100 transition-opacity">
                 <BlockTypeSwitcher currentType={block.type} onSwitch={(t) => switchBlockType(block.id, t)} />
                 <button onClick={() => moveBlock(index, -1)} disabled={index === 0} className="p-1 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
-                  <ChevronUp className="h-4 w-4" />
+                  <ChevronUp className="h-[18px] w-[18px]" />
                 </button>
                 <button onClick={() => moveBlock(index, 1)} disabled={index === blocks.length - 1} className="p-1 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-[18px] w-[18px]" />
                 </button>
                 <button onClick={() => deleteBlock(block.id)} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash2 className="h-4 w-4" />
                 </button>
               </div>
 
