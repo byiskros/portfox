@@ -81,27 +81,25 @@ export default function PortfolioPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12">
         {/* Header */}
-        <div className="flex items-start gap-4 mb-8">
+        <div className="flex flex-col items-center text-center mb-10">
           {profile.avatar_url && (
-            <img src={profile.avatar_url} alt="" className="w-16 h-16 rounded-full object-cover shrink-0" />
+            <img src={profile.avatar_url} alt="" className="w-20 h-20 rounded-full object-cover mb-4" />
           )}
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold text-foreground">{profile.name || 'Unnamed'}</h1>
-            {profile.role && <p className="text-sm text-muted-foreground">{profile.role}</p>}
-            {profile.bio && <p className="text-sm text-foreground/70 mt-2">{profile.bio}</p>}
-            {profile.links && profile.links.length > 0 && (
-              <div className="flex flex-wrap gap-3 mt-3">
-                {profile.links.map((link, i) => (
-                  <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-                    <ExternalLink className="h-3 w-3" />
-                    {new URL(link).hostname}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
+          <h1 className="text-xl font-semibold text-foreground">{profile.name || 'Unnamed'}</h1>
+          {profile.role && <p className="text-sm text-muted-foreground mt-1">{profile.role}</p>}
+          {profile.bio && <p className="text-sm text-foreground/70 mt-3 max-w-md">{profile.bio}</p>}
+          {profile.links && profile.links.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-3 mt-4">
+              {profile.links.map((link, i) => (
+                <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+                  <ExternalLink className="h-3 w-3" />
+                  {new URL(link).hostname}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Tabs */}
