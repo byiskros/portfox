@@ -145,7 +145,7 @@ export default function PortfolioPage() {
         )}
 
         {activeTab === 'resume' && (
-          <div>
+          <div className="max-w-[720px] mx-auto">
             {resume ? (
               <div className="text-sm text-foreground/80 whitespace-pre-wrap leading-relaxed">{resume}</div>
             ) : (

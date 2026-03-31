@@ -153,7 +153,7 @@ export default function CaseEditorPage() {
         <p className="text-xs text-muted-foreground">Blocks</p>
         {blocks.map((block, index) => (
           <div key={block.id} className="group flex gap-2">
-            <div className="flex flex-col gap-0.5 pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex flex-col gap-0.5 pt-3 opacity-0 group-hover:opacity-100 transition-opacity">
               <button onClick={() => moveBlock(index, -1)} disabled={index === 0} className="p-0.5 hover:bg-secondary rounded disabled:opacity-20">
                 <ChevronUp className="h-3 w-3" />
               </button>
@@ -164,7 +164,7 @@ export default function CaseEditorPage() {
                 <Trash2 className="h-3 w-3" />
               </button>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 rounded-lg bg-secondary/50 p-4">
               {block.type === 'heading' && (
                 <Input
                   value={block.content}

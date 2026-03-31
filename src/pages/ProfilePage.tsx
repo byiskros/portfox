@@ -127,7 +127,7 @@ export default function ProfilePage() {
   const isIncomplete = !profile.name || !profile.slug;
 
   return (
-    <div className="space-y-6 max-w-lg">
+    <div className="space-y-6 max-w-xl">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-foreground">Profile</h1>
         <Button onClick={save} size="sm" disabled={saving || slugStatus === 'taken'}>
