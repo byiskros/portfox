@@ -267,6 +267,7 @@ export default function CaseEditorPage() {
                   />
                 )
               )}
+              </div>
             </div>
 
             {/* Inserter after each block */}
