@@ -184,13 +184,25 @@ export default function CaseEditorPage() {
             <ArrowLeft className="h-4 w-4" />
             Back
           </button>
-          <Button
-            onClick={togglePublish}
-            variant={caseData.status === 'published' ? 'outline' : 'default'}
-            size="sm"
-          >
-            {caseData.status === 'published' ? 'Unpublish' : 'Publish'}
-          </Button>
+
+          <div className="flex items-center gap-4">
+            {/* Save status */}
+            <span className="text-xs text-muted-foreground flex items-center gap-1">
+              {saveStatus === 'saving' && <><Loader2 className="h-3 w-3 animate-spin" /> Saving…</>}
+              {saveStatus === 'saved' && <><Check className="h-3 w-3" /> Saved</>}
+            </span>
+
+            {/* Publish toggle */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <span className="text-xs text-muted-foreground">
+                {caseData.status === 'published' ? 'Published' : 'Draft'}
+              </span>
+              <Switch
+                checked={caseData.status === 'published'}
+                onCheckedChange={togglePublish}
+              />
+            </label>
+          </div>
         </div>
       </div>
 

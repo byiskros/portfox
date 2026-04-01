@@ -86,8 +86,8 @@ export default function PortfolioPage() {
           <button onClick={closeCase} className="text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
             ← Back to portfolio
           </button>
-          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-4">{caseTitle}</h1>
-          <AuthorCard className="mb-10" />
+          <AuthorCard className="mb-6" />
+          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-10">{caseTitle}
           <div className="space-y-4">
             {caseBlocks.map((block) => (
               <div key={block.id}>
