@@ -8,7 +8,7 @@ export default function BlockInserter({ onAdd }: { onAdd: (type: BlockType) => v
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative flex items-center justify-center h-6 group/inserter">
+    <div className="relative flex items-center justify-center h-2 group/inserter">
       {/* Hover line */}
       <div className="absolute inset-x-0 top-1/2 h-px bg-transparent group-hover/inserter:bg-border transition-colors" />
 
