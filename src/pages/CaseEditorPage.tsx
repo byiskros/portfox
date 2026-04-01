@@ -40,6 +40,17 @@ export default function CaseEditorPage() {
       if (caseRes.data) setCaseData(caseRes.data);
       if (blocksRes.data) setBlocks(blocksRes.data);
       setLoading(false);
+      // Auto-resize all textareas after data loads
+      setTimeout(() => {
+        if (titleRef.current) {
+          titleRef.current.style.height = 'auto';
+          titleRef.current.style.height = titleRef.current.scrollHeight + 'px';
+        }
+        blockRefs.current.forEach((el) => {
+          el.style.height = 'auto';
+          el.style.height = el.scrollHeight + 'px';
+        });
+      }, 0);
     });
   }, [id, user]);
 
@@ -275,7 +286,7 @@ export default function CaseEditorPage() {
                 {/* Content */}
                 {block.type === 'heading' && (
                   <textarea
-                    ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
+                    ref={(el) => { if (el) { blockRefs.current.set(block.id, el); el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
                     value={block.content}
                     onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                     onFocus={(e) => autoResizeTextarea(e.target)}
@@ -287,7 +298,7 @@ export default function CaseEditorPage() {
                 )}
                 {block.type === 'text' && (
                   <textarea
-                    ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
+                    ref={(el) => { if (el) { blockRefs.current.set(block.id, el); el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
                     value={block.content}
                     onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                     onFocus={(e) => autoResizeTextarea(e.target)}
