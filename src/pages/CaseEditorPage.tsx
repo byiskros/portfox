@@ -254,7 +254,15 @@ export default function CaseEditorPage() {
           <div className="mb-12 relative group/cover">
             <img src={caseData.cover_image_url} alt="" className="w-full rounded-lg" />
             <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover/cover:opacity-100 transition-opacity rounded-lg">
-              <ImageUpload onUpload={handleCoverUpload} loading={saving} className="w-full h-full" />
+              <div className="flex gap-2">
+                <ImageUpload onUpload={handleCoverUpload} loading={saving} className="px-4 py-2 bg-white/90 rounded-lg text-sm font-medium text-foreground hover:bg-white transition-colors" />
+                <button
+                  onClick={() => saveCase({ cover_image_url: null })}
+                  className="px-4 py-2 bg-white/90 rounded-lg text-sm font-medium text-destructive hover:bg-white transition-colors"
+                >
+                  Удалить
+                </button>
+              </div>
             </div>
           </div>
         )}
