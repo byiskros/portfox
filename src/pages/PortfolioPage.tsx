@@ -91,7 +91,11 @@ export default function PortfolioPage() {
             ← Back to portfolio
           </button>
           <AuthorCard className="mb-6" />
-          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-10">{caseTitle}</h1>
+          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-3">{caseData?.title}</h1>
+          {(caseData as any)?.description && (
+            <p className="text-lg leading-[1.6] text-muted-foreground mb-10">{(caseData as any).description}</p>
+          )}
+          {!((caseData as any)?.description) && <div className="mb-10" />}
           <div className="space-y-4">
             {caseBlocks.map((block) => (
               <div key={block.id}>
