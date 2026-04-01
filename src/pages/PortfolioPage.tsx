@@ -64,13 +64,13 @@ export default function PortfolioPage() {
           <button onClick={closeCase} className="text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
             ← Back to portfolio
           </button>
-          <h1 className="text-2xl font-semibold text-foreground mb-8">{caseTitle}</h1>
-          <div className="max-w-[720px] space-y-6">
+          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-10">{caseTitle}</h1>
+          <div className="max-w-[740px] space-y-8">
             {caseBlocks.map((block) => (
               <div key={block.id}>
-                {block.type === 'heading' && <h2 className="text-xl font-semibold text-foreground">{block.content}</h2>}
-                {block.type === 'text' && <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{block.content}</p>}
-                {block.type === 'image' && <img src={block.content} alt="" className="rounded-lg max-w-full" />}
+                {block.type === 'heading' && <h2 className="text-xl md:text-2xl font-semibold leading-[1.3] text-foreground">{block.content}</h2>}
+                {block.type === 'text' && <p className="text-lg leading-[1.8] text-muted-foreground whitespace-pre-wrap">{block.content}</p>}
+                {block.type === 'image' && <img src={block.content} alt="" className="rounded-xl shadow-sm w-full" />}
               </div>
             ))}
           </div>
