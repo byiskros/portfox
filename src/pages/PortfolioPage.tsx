@@ -18,7 +18,7 @@ export default function PortfolioPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCase, setSelectedCase] = useState<string | null>(null);
   const [caseBlocks, setCaseBlocks] = useState<Block[]>([]);
-  const [caseTitle, setCaseTitle] = useState('');
+  const [caseData, setCaseData] = useState<Case | null>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -43,15 +43,19 @@ export default function PortfolioPage() {
 
   const openCase = async (c: Case) => {
     setSelectedCase(c.id);
-    setCaseTitle(c.title);
-    const { data } = await supabase.from('blocks').select('*').eq('case_id', c.id).order('sort_order');
-    setCaseBlocks(data || []);
+    // Fetch fresh case data and blocks
+    const [freshCase, blocksRes] = await Promise.all([
+      supabase.from('cases').select('*').eq('id', c.id).single(),
+      supabase.from('blocks').select('*').eq('case_id', c.id).order('sort_order'),
+    ]);
+    setCaseData(freshCase.data || c);
+    setCaseBlocks(blocksRes.data || []);
   };
 
   const closeCase = () => {
     setSelectedCase(null);
     setCaseBlocks([]);
-    setCaseTitle('');
+    setCaseData(null);
   };
 
   if (loading) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Loading…</div>;
@@ -87,7 +91,11 @@ export default function PortfolioPage() {
             ← Back to portfolio
           </button>
           <AuthorCard className="mb-6" />
-          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-10">{caseTitle}</h1>
+          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-3">{caseData?.title}</h1>
+          {(caseData as any)?.description && (
+            <p className="text-lg leading-[1.6] text-muted-foreground mb-10">{(caseData as any).description}</p>
+          )}
+          {!((caseData as any)?.description) && <div className="mb-10" />}
           <div className="space-y-4">
             {caseBlocks.map((block) => (
               <div key={block.id}>
