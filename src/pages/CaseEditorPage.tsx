@@ -311,7 +311,7 @@ export default function CaseEditorPage() {
                   ) : (
                     <ImageUpload
                       onUpload={(file) => handleBlockImageUpload(block.id, file)}
-                      className="aspect-[16/9] border border-dashed border-border rounded-lg hover:border-muted-foreground/40 transition-colors"
+                      className="py-8 border border-dashed border-border rounded-lg hover:border-muted-foreground/40 transition-colors"
                     />
                   )
                 )}
