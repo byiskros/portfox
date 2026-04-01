@@ -18,7 +18,7 @@ export default function PortfolioPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCase, setSelectedCase] = useState<string | null>(null);
   const [caseBlocks, setCaseBlocks] = useState<Block[]>([]);
-  const [caseTitle, setCaseTitle] = useState('');
+  const [caseData, setCaseData] = useState<Case | null>(null);
 
   useEffect(() => {
     if (!slug) return;
