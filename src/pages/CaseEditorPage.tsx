@@ -193,7 +193,21 @@ export default function CaseEditorPage() {
           onBlur={() => saveCase({ title: caseData.title })}
           placeholder="Untitled"
           rows={1}
-          className="w-full text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/30 mb-10"
+          className="w-full text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/30 mb-3"
+          onFocus={(e) => autoResizeTextarea(e.target)}
+        />
+
+        {/* Description */}
+        <textarea
+          value={(caseData as any).description || ''}
+          onChange={(e) => {
+            setCaseData((prev) => prev ? { ...prev, description: e.target.value } as any : prev);
+            autoResizeTextarea(e.target);
+          }}
+          onBlur={() => saveCase({ description: (caseData as any).description || '' } as any)}
+          placeholder="Short description…"
+          rows={1}
+          className="w-full text-lg leading-[1.6] bg-transparent border-0 outline-none resize-none text-muted-foreground placeholder:text-muted-foreground/30 mb-10"
           onFocus={(e) => autoResizeTextarea(e.target)}
         />
 

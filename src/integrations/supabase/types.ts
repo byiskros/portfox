@@ -53,6 +53,7 @@ export type Database = {
         Row: {
           cover_image_url: string | null
           created_at: string
+          description: string | null
           id: string
           status: Database["public"]["Enums"]["case_status"]
           title: string
@@ -62,6 +63,7 @@ export type Database = {
         Insert: {
           cover_image_url?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           status?: Database["public"]["Enums"]["case_status"]
           title?: string
@@ -71,6 +73,7 @@ export type Database = {
         Update: {
           cover_image_url?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           status?: Database["public"]["Enums"]["case_status"]
           title?: string

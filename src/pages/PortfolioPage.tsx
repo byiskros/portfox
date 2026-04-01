@@ -87,7 +87,7 @@ export default function PortfolioPage() {
             ← Back to portfolio
           </button>
           <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-4">{caseTitle}</h1>
-          <AuthorCard className="mb-10 pb-8 border-b border-border" />
+          <AuthorCard className="mb-10" />
           <div className="space-y-4">
             {caseBlocks.map((block) => (
               <div key={block.id}>
