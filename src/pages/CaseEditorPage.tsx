@@ -6,8 +6,8 @@ import { uploadImage } from '@/lib/upload';
 import { Button } from '@/components/ui/button';
 import ImageUpload from '@/components/ImageUpload';
 import BlockInserter from '@/components/BlockInserter';
-import BlockTypeSwitcher from '@/components/BlockTypeSwitcher';
-import { ArrowLeft, Plus, ChevronUp, ChevronDown, Trash2 } from 'lucide-react';
+import BlockMenu from '@/components/BlockMenu';
+import { ArrowLeft, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
 import type { Database } from '@/integrations/supabase/types';
@@ -77,7 +77,6 @@ export default function CaseEditorPage() {
       for (const b of shifted.filter((_, i) => i >= newOrder)) {
         await supabase.from('blocks').update({ sort_order: b.sort_order }).eq('id', b.id);
       }
-      // Focus new block
       setTimeout(() => {
         const el = blockRefs.current.get(data.id);
         el?.focus();
@@ -152,21 +151,21 @@ export default function CaseEditorPage() {
     el.style.height = el.scrollHeight + 'px';
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>, block: Block, index: number) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>, _block: Block, index: number) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       insertBlockAt('text', index);
     }
   };
 
-  if (loading) return <div className="min-h-screen bg-muted flex items-center justify-center text-sm text-muted-foreground">Loading…</div>;
-  if (!caseData) return <div className="min-h-screen bg-muted flex items-center justify-center text-sm text-muted-foreground">Not found</div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Loading…</div>;
+  if (!caseData) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Not found</div>;
 
   return (
-    <div className="min-h-screen bg-muted">
-      <div className="max-w-[740px] mx-auto pb-24 px-4 pt-6">
-        {/* Top bar */}
-        <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen bg-background">
+      {/* Sticky top bar */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="max-w-[740px] mx-auto px-4 flex items-center justify-between h-12">
           <button onClick={() => navigate('/dashboard')} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -179,108 +178,104 @@ export default function CaseEditorPage() {
             {caseData.status === 'published' ? 'Unpublish' : 'Publish'}
           </Button>
         </div>
+      </div>
 
+      {/* Content */}
+      <div className="max-w-[740px] mx-auto px-4 pt-12 pb-32">
         {/* Title */}
-        <div className="bg-background border border-border rounded-xl p-4 mb-4">
-          <textarea
-            ref={titleRef}
-            value={caseData.title}
-            onChange={(e) => {
-              setCaseData((prev) => prev ? { ...prev, title: e.target.value } : prev);
-              autoResizeTextarea(e.target);
-            }}
-            onBlur={() => saveCase({ title: caseData.title })}
-            placeholder="Untitled"
-            rows={1}
-            className="w-full text-[2rem] md:text-[2.5rem] font-bold leading-tight bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/50"
-            onFocus={(e) => autoResizeTextarea(e.target)}
-          />
-        </div>
+        <textarea
+          ref={titleRef}
+          value={caseData.title}
+          onChange={(e) => {
+            setCaseData((prev) => prev ? { ...prev, title: e.target.value } : prev);
+            autoResizeTextarea(e.target);
+          }}
+          onBlur={() => saveCase({ title: caseData.title })}
+          placeholder="Untitled"
+          rows={1}
+          className="w-full text-4xl md:text-[2.75rem] font-bold leading-tight bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/30 mb-8"
+          onFocus={(e) => autoResizeTextarea(e.target)}
+        />
 
         {/* Cover image */}
-        <div className="bg-background border border-border rounded-xl p-4 mb-4">
+        <div className="mb-12">
           {caseData.cover_image_url ? (
             <div className="relative group/cover">
               <img src={caseData.cover_image_url} alt="" className="w-full rounded-lg" />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover/cover:opacity-100 transition-opacity rounded-lg">
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover/cover:opacity-100 transition-opacity rounded-lg">
                 <ImageUpload onUpload={handleCoverUpload} loading={saving} className="w-full h-full" />
               </div>
             </div>
           ) : (
-            <ImageUpload onUpload={handleCoverUpload} loading={saving} className="aspect-[16/9] border border-dashed border-border rounded-lg" />
+            <ImageUpload onUpload={handleCoverUpload} loading={saving} className="aspect-[16/9] border border-dashed border-border rounded-lg hover:border-muted-foreground/40 transition-colors" />
           )}
         </div>
 
         {/* Blocks */}
         <div>
-          {/* Inserter before first block */}
           <BlockInserter onAdd={(type) => insertBlockAt(type, -1)} />
 
           {blocks.map((block, index) => (
             <div key={block.id}>
-              {/* Block */}
-              <div className="group/block relative bg-background border border-border rounded-xl p-4">
-                {/* Content */}
-                <div className="pr-28">
-                  {block.type === 'heading' && (
-                    <textarea
-                      ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
-                      value={block.content}
-                      onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
-                      onFocus={(e) => autoResizeTextarea(e.target)}
-                      onKeyDown={(e) => handleKeyDown(e, block, index)}
-                      placeholder="Heading"
-                      rows={1}
-                      className="w-full text-xl md:text-2xl font-semibold leading-snug bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/40"
-                    />
-                  )}
-                  {block.type === 'text' && (
-                    <textarea
-                      ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
-                      value={block.content}
-                      onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
-                      onFocus={(e) => autoResizeTextarea(e.target)}
-                      onKeyDown={(e) => handleKeyDown(e, block, index)}
-                      placeholder="Write something…"
-                      rows={1}
-                      className="w-full text-base leading-relaxed bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/40"
-                    />
-                  )}
-                  {block.type === 'image' && (
-                    block.content ? (
-                      <img src={block.content} alt="" className="w-full rounded-lg" />
-                    ) : (
-                      <ImageUpload
-                        onUpload={(file) => handleBlockImageUpload(block.id, file)}
-                        className="aspect-[16/9] border border-dashed border-border rounded-lg"
-                      />
-                    )
-                  )}
+              {/* Block row */}
+              <div className="group/block relative -ml-8 pl-8">
+                {/* Grip handle — left side, on hover */}
+                <div className="absolute left-0 top-0 opacity-0 group-hover/block:opacity-100 transition-opacity">
+                  <BlockMenu
+                    currentType={block.type}
+                    onSwitchType={(t) => switchBlockType(block.id, t)}
+                    onMoveUp={() => moveBlock(index, -1)}
+                    onMoveDown={() => moveBlock(index, 1)}
+                    onDelete={() => deleteBlock(block.id)}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < blocks.length - 1}
+                  />
                 </div>
 
-                {/* Controls — hover only */}
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
-                  <BlockTypeSwitcher currentType={block.type} onSwitch={(t) => switchBlockType(block.id, t)} />
-                  <button onClick={() => moveBlock(index, -1)} disabled={index === 0} className="p-1 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
-                    <ChevronUp className="h-[18px] w-[18px]" />
-                  </button>
-                  <button onClick={() => moveBlock(index, 1)} disabled={index === blocks.length - 1} className="p-1 rounded hover:bg-muted disabled:opacity-20 text-muted-foreground hover:text-foreground transition-colors">
-                    <ChevronDown className="h-[18px] w-[18px]" />
-                  </button>
-                  <button onClick={() => deleteBlock(block.id)} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
+                {/* Content */}
+                {block.type === 'heading' && (
+                  <textarea
+                    ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
+                    value={block.content}
+                    onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
+                    onFocus={(e) => autoResizeTextarea(e.target)}
+                    onKeyDown={(e) => handleKeyDown(e, block, index)}
+                    placeholder="Heading"
+                    rows={1}
+                    className="w-full text-2xl md:text-[1.75rem] font-semibold leading-snug bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/30 py-1"
+                  />
+                )}
+                {block.type === 'text' && (
+                  <textarea
+                    ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
+                    value={block.content}
+                    onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
+                    onFocus={(e) => autoResizeTextarea(e.target)}
+                    onKeyDown={(e) => handleKeyDown(e, block, index)}
+                    placeholder="Write something…"
+                    rows={1}
+                    className="w-full text-[1.0625rem] leading-[1.7] bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/30 py-1"
+                  />
+                )}
+                {block.type === 'image' && (
+                  block.content ? (
+                    <img src={block.content} alt="" className="w-full rounded-lg" />
+                  ) : (
+                    <ImageUpload
+                      onUpload={(file) => handleBlockImageUpload(block.id, file)}
+                      className="aspect-[16/9] border border-dashed border-border rounded-lg hover:border-muted-foreground/40 transition-colors"
+                    />
+                  )
+                )}
               </div>
 
-              {/* Inserter after each block */}
               <BlockInserter onAdd={(type) => insertBlockAt(type, index)} />
             </div>
           ))}
 
           {/* Empty state */}
           {blocks.length === 0 && (
-            <div className="bg-background border border-border rounded-xl flex items-center justify-center gap-3 py-12 text-muted-foreground">
+            <div className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
               <Plus className="h-4 w-4" />
               <button onClick={() => addBlock('heading')} className="text-sm hover:text-foreground transition-colors">Heading</button>
               <span className="text-border">·</span>
