@@ -286,7 +286,7 @@ export default function CaseEditorPage() {
                 {/* Content */}
                 {block.type === 'heading' && (
                   <textarea
-                    ref={(el) => { if (el) blockRefs.current.set(block.id, el); }}
+                    ref={(el) => { if (el) { blockRefs.current.set(block.id, el); el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
                     value={block.content}
                     onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                     onFocus={(e) => autoResizeTextarea(e.target)}
