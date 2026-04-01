@@ -242,7 +242,7 @@ export default function CaseEditorPage() {
                     onKeyDown={(e) => handleKeyDown(e, block, index)}
                     placeholder="Heading"
                     rows={1}
-                    className="w-full text-2xl md:text-[1.75rem] font-semibold leading-snug bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/30 py-1"
+                    className="w-full text-xl md:text-2xl font-semibold leading-[1.3] bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/30 py-1"
                   />
                 )}
                 {block.type === 'text' && (
@@ -254,12 +254,12 @@ export default function CaseEditorPage() {
                     onKeyDown={(e) => handleKeyDown(e, block, index)}
                     placeholder="Write something…"
                     rows={1}
-                    className="w-full text-[1.0625rem] leading-[1.7] bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-muted-foreground/30 py-1"
+                    className="w-full text-lg leading-[1.8] bg-transparent border-0 outline-none resize-none text-muted-foreground placeholder:text-muted-foreground/30 py-1"
                   />
                 )}
                 {block.type === 'image' && (
                   block.content ? (
-                    <img src={block.content} alt="" className="w-full rounded-lg" />
+                    <img src={block.content} alt="" className="w-full rounded-xl shadow-sm" />
                   ) : (
                     <ImageUpload
                       onUpload={(file) => handleBlockImageUpload(block.id, file)}
