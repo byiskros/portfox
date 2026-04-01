@@ -57,22 +57,49 @@ export default function PortfolioPage() {
   if (loading) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Loading…</div>;
   if (!profile) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Not found</div>;
 
+  const AuthorCard = ({ className = '' }: { className?: string }) => (
+    <div className={`flex items-center gap-3 ${className}`}>
+      {profile!.avatar_url && (
+        <img src={profile!.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+      )}
+      <div>
+        <p className="text-sm font-medium text-foreground">{profile!.name || 'Unnamed'}</p>
+        {profile!.role && <p className="text-xs text-muted-foreground">{profile!.role}</p>}
+      </div>
+      {profile!.links && profile!.links.length > 0 && (
+        <div className="flex items-center gap-2 ml-auto">
+          {profile!.links.map((link, i) => (
+            <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+              <ExternalLink className="h-3 w-3" />
+              {new URL(link).hostname}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   if (selectedCase) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-8">
-          <button onClick={closeCase} className="text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+        <div className="max-w-[740px] mx-auto px-4 sm:px-6 py-8">
+          <button onClick={closeCase} className="text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
             ← Back to portfolio
           </button>
-          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-10">{caseTitle}</h1>
-          <div className="max-w-[740px] space-y-8">
+          <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-4">{caseTitle}</h1>
+          <AuthorCard className="mb-10 pb-8 border-b border-border" />
+          <div className="space-y-4">
             {caseBlocks.map((block) => (
               <div key={block.id}>
-                {block.type === 'heading' && <h2 className="text-xl md:text-2xl font-semibold leading-[1.3] text-foreground">{block.content}</h2>}
+                {block.type === 'heading' && <h2 className="text-xl md:text-2xl font-semibold leading-[1.3] text-foreground pt-4">{block.content}</h2>}
                 {block.type === 'text' && <p className="text-lg leading-[1.8] text-muted-foreground whitespace-pre-wrap">{block.content}</p>}
-                {block.type === 'image' && <img src={block.content} alt="" className="rounded-xl shadow-sm w-full" />}
+                {block.type === 'image' && <img src={block.content} alt="" className="rounded-xl shadow-sm w-full my-4" />}
               </div>
             ))}
+          </div>
+          {/* Author footer */}
+          <div className="mt-16 pt-8 border-t border-border">
+            <AuthorCard />
           </div>
         </div>
       </div>
