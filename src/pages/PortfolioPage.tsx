@@ -55,7 +55,7 @@ export default function PortfolioPage() {
   const closeCase = () => {
     setSelectedCase(null);
     setCaseBlocks([]);
-    setCaseTitle('');
+    setCaseData(null);
   };
 
   if (loading) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Loading…</div>;
