@@ -1,13 +1,13 @@
-import { useEffect, useState, useRef, KeyboardEvent } from 'react';
+import { useEffect, useState, useRef, useCallback, KeyboardEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { uploadImage } from '@/lib/upload';
-import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import ImageUpload from '@/components/ImageUpload';
 import BlockInserter from '@/components/BlockInserter';
 import BlockMenu from '@/components/BlockMenu';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { ArrowLeft, Plus, Check, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
 import type { Database } from '@/integrations/supabase/types';
@@ -15,6 +15,8 @@ import type { Database } from '@/integrations/supabase/types';
 type Case = Tables<'cases'>;
 type Block = Tables<'blocks'>;
 type BlockType = Database['public']['Enums']['block_type'];
+
+type SaveStatus = 'idle' | 'saving' | 'saved';
 
 export default function CaseEditorPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +26,8 @@ export default function CaseEditorPage() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const blockRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
 
@@ -39,11 +43,18 @@ export default function CaseEditorPage() {
     });
   }, [id, user]);
 
+  const showSaved = useCallback(() => {
+    setSaveStatus('saved');
+    clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => setSaveStatus('idle'), 2000);
+  }, []);
+
   const saveCase = async (updates: Partial<Case>) => {
     if (!id) return;
+    setSaveStatus('saving');
     const { error } = await supabase.from('cases').update(updates).eq('id', id);
-    if (error) toast.error('Failed to save');
-    else setCaseData((prev) => prev ? { ...prev, ...updates } : prev);
+    if (error) { toast.error('Failed to save'); setSaveStatus('idle'); }
+    else { setCaseData((prev) => prev ? { ...prev, ...updates } : prev); showSaved(); }
   };
 
   const handleCoverUpload = async (file: File) => {
@@ -104,7 +115,10 @@ export default function CaseEditorPage() {
 
   const updateBlock = async (blockId: string, content: string) => {
     setBlocks((prev) => prev.map((b) => (b.id === blockId ? { ...b, content } : b)));
-    await supabase.from('blocks').update({ content }).eq('id', blockId);
+    setSaveStatus('saving');
+    const { error } = await supabase.from('blocks').update({ content }).eq('id', blockId);
+    if (error) { toast.error('Failed to save'); setSaveStatus('idle'); }
+    else showSaved();
   };
 
   const switchBlockType = async (blockId: string, newType: BlockType) => {
@@ -170,13 +184,25 @@ export default function CaseEditorPage() {
             <ArrowLeft className="h-4 w-4" />
             Back
           </button>
-          <Button
-            onClick={togglePublish}
-            variant={caseData.status === 'published' ? 'outline' : 'default'}
-            size="sm"
-          >
-            {caseData.status === 'published' ? 'Unpublish' : 'Publish'}
-          </Button>
+
+          <div className="flex items-center gap-4">
+            {/* Save status */}
+            <span className="text-xs text-muted-foreground flex items-center gap-1">
+              {saveStatus === 'saving' && <><Loader2 className="h-3 w-3 animate-spin" /> Saving…</>}
+              {saveStatus === 'saved' && <><Check className="h-3 w-3" /> Saved</>}
+            </span>
+
+            {/* Publish toggle */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <span className="text-xs text-muted-foreground">
+                {caseData.status === 'published' ? 'Published' : 'Draft'}
+              </span>
+              <Switch
+                checked={caseData.status === 'published'}
+                onCheckedChange={togglePublish}
+              />
+            </label>
+          </div>
         </div>
       </div>
 
