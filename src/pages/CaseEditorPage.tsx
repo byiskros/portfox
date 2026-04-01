@@ -306,7 +306,7 @@ export default function CaseEditorPage() {
                     onKeyDown={(e) => handleKeyDown(e, block, index)}
                     placeholder="Write something…"
                     rows={1}
-                    className="w-full text-lg leading-[1.8] bg-transparent border-0 outline-none resize-none text-muted-foreground placeholder:text-muted-foreground/30 py-1"
+                    className="w-full text-lg leading-[1.8] bg-transparent border-0 outline-none resize-none overflow-hidden text-muted-foreground placeholder:text-muted-foreground/30 py-1"
                   />
                 )}
                 {block.type === 'image' && (
