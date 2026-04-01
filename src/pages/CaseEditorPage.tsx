@@ -43,11 +43,18 @@ export default function CaseEditorPage() {
     });
   }, [id, user]);
 
+  const showSaved = useCallback(() => {
+    setSaveStatus('saved');
+    clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => setSaveStatus('idle'), 2000);
+  }, []);
+
   const saveCase = async (updates: Partial<Case>) => {
     if (!id) return;
+    setSaveStatus('saving');
     const { error } = await supabase.from('cases').update(updates).eq('id', id);
-    if (error) toast.error('Failed to save');
-    else setCaseData((prev) => prev ? { ...prev, ...updates } : prev);
+    if (error) { toast.error('Failed to save'); setSaveStatus('idle'); }
+    else { setCaseData((prev) => prev ? { ...prev, ...updates } : prev); showSaved(); }
   };
 
   const handleCoverUpload = async (file: File) => {
