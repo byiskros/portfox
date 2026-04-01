@@ -115,7 +115,10 @@ export default function CaseEditorPage() {
 
   const updateBlock = async (blockId: string, content: string) => {
     setBlocks((prev) => prev.map((b) => (b.id === blockId ? { ...b, content } : b)));
-    await supabase.from('blocks').update({ content }).eq('id', blockId);
+    setSaveStatus('saving');
+    const { error } = await supabase.from('blocks').update({ content }).eq('id', blockId);
+    if (error) { toast.error('Failed to save'); setSaveStatus('idle'); }
+    else showSaved();
   };
 
   const switchBlockType = async (blockId: string, newType: BlockType) => {
