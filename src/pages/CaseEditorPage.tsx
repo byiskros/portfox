@@ -1,13 +1,13 @@
-import { useEffect, useState, useRef, KeyboardEvent } from 'react';
+import { useEffect, useState, useRef, useCallback, KeyboardEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { uploadImage } from '@/lib/upload';
-import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import ImageUpload from '@/components/ImageUpload';
 import BlockInserter from '@/components/BlockInserter';
 import BlockMenu from '@/components/BlockMenu';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { ArrowLeft, Plus, Check, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
 import type { Database } from '@/integrations/supabase/types';
@@ -15,6 +15,8 @@ import type { Database } from '@/integrations/supabase/types';
 type Case = Tables<'cases'>;
 type Block = Tables<'blocks'>;
 type BlockType = Database['public']['Enums']['block_type'];
+
+type SaveStatus = 'idle' | 'saving' | 'saved';
 
 export default function CaseEditorPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +26,8 @@ export default function CaseEditorPage() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const blockRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
 
