@@ -236,6 +236,7 @@ export default function CaseEditorPage() {
 
         {/* Description */}
         <textarea
+          ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
           value={(caseData as any).description || ''}
           onChange={(e) => {
             setCaseData((prev) => prev ? { ...prev, description: e.target.value } as any : prev);
