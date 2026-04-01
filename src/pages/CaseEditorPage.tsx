@@ -249,19 +249,15 @@ export default function CaseEditorPage() {
           onFocus={(e) => autoResizeTextarea(e.target)}
         />
 
-        {/* Cover image */}
-        <div className="mb-12">
-          {caseData.cover_image_url ? (
-            <div className="relative group/cover">
-              <img src={caseData.cover_image_url} alt="" className="w-full rounded-lg" />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover/cover:opacity-100 transition-opacity rounded-lg">
-                <ImageUpload onUpload={handleCoverUpload} loading={saving} className="w-full h-full" />
-              </div>
+        {/* Cover image (only if set) */}
+        {caseData.cover_image_url && (
+          <div className="mb-12 relative group/cover">
+            <img src={caseData.cover_image_url} alt="" className="w-full rounded-lg" />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover/cover:opacity-100 transition-opacity rounded-lg">
+              <ImageUpload onUpload={handleCoverUpload} loading={saving} className="w-full h-full" />
             </div>
-          ) : (
-            <ImageUpload onUpload={handleCoverUpload} loading={saving} className="aspect-[16/9] border border-dashed border-border rounded-lg hover:border-muted-foreground/40 transition-colors" />
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Blocks */}
         <div>
