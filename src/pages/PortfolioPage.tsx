@@ -43,9 +43,13 @@ export default function PortfolioPage() {
 
   const openCase = async (c: Case) => {
     setSelectedCase(c.id);
-    setCaseTitle(c.title);
-    const { data } = await supabase.from('blocks').select('*').eq('case_id', c.id).order('sort_order');
-    setCaseBlocks(data || []);
+    // Fetch fresh case data and blocks
+    const [freshCase, blocksRes] = await Promise.all([
+      supabase.from('cases').select('*').eq('id', c.id).single(),
+      supabase.from('blocks').select('*').eq('case_id', c.id).order('sort_order'),
+    ]);
+    setCaseData(freshCase.data || c);
+    setCaseBlocks(blocksRes.data || []);
   };
 
   const closeCase = () => {
