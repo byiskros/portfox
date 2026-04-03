@@ -145,6 +145,39 @@ export type Database = {
         }
         Relationships: []
       }
+      work_experiences: {
+        Row: {
+          company: string
+          created_at: string
+          description: string
+          id: string
+          period: string
+          sort_order: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string
+          created_at?: string
+          description?: string
+          id?: string
+          period?: string
+          sort_order?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          description?: string
+          id?: string
+          period?: string
+          sort_order?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
