@@ -153,19 +153,21 @@ export default function PortfolioPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex justify-center gap-4 border-b border-border mb-8">
-          <button
-            onClick={() => setActiveTab('projects')}
-            className={`pb-2 text-sm transition-colors ${activeTab === 'projects' ? 'text-foreground border-b-2 border-foreground font-medium' : 'text-muted-foreground hover:text-foreground'}`}
-          >
-            Проекты
-          </button>
-          <button
-            onClick={() => setActiveTab('resume')}
-            className={`pb-2 text-sm transition-colors ${activeTab === 'resume' ? 'text-foreground border-b-2 border-foreground font-medium' : 'text-muted-foreground hover:text-foreground'}`}
-          >
-            Резюме
-          </button>
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex rounded-xl bg-muted p-1 gap-1">
+            <button
+              onClick={() => setActiveTab('projects')}
+              className={`px-5 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'projects' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Проекты
+            </button>
+            <button
+              onClick={() => setActiveTab('resume')}
+              className={`px-5 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'resume' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Резюме
+            </button>
+          </div>
         </div>
 
         {/* Content */}
