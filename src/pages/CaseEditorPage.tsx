@@ -160,7 +160,7 @@ export default function CaseEditorPage() {
       const url = await uploadImage(file, user.id, 'blocks');
       updateBlock(blockId, url);
     } catch {
-      toast.error('Upload failed');
+      toast.error('Не удалось загрузить');
     }
   };
 
