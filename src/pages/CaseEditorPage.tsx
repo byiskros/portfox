@@ -114,7 +114,7 @@ export default function CaseEditorPage() {
       .insert({ case_id: id, type, sort_order: maxOrder + 1 })
       .select()
       .single();
-    if (error) toast.error('Failed to add block');
+    if (error) toast.error('Не удалось добавить блок');
     else if (data) {
       setBlocks((prev) => [...prev, data]);
       setTimeout(() => {
