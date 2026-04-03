@@ -128,7 +128,7 @@ export default function CaseEditorPage() {
     setBlocks((prev) => prev.map((b) => (b.id === blockId ? { ...b, content } : b)));
     setSaveStatus('saving');
     const { error } = await supabase.from('blocks').update({ content }).eq('id', blockId);
-    if (error) { toast.error('Failed to save'); setSaveStatus('idle'); }
+    if (error) { toast.error('Не удалось сохранить'); setSaveStatus('idle'); }
     else showSaved();
   };
 
