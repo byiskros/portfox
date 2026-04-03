@@ -92,7 +92,7 @@ export default function CaseEditorPage() {
       .insert({ case_id: id, type, sort_order: newOrder })
       .select()
       .single();
-    if (error) { toast.error('Failed to add block'); return; }
+    if (error) { toast.error('Не удалось добавить блок'); return; }
     if (data) {
       const updated = [...shifted.slice(0, newOrder), data, ...shifted.slice(newOrder)];
       setBlocks(updated.map((b, i) => ({ ...b, sort_order: i })));
