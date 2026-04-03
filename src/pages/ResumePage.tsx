@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Plus, Trash2, Check, Loader2 } from 'lucide-react';
+import PeriodPicker from '@/components/PeriodPicker';
 
 interface WorkExperience {
   id: string;
