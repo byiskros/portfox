@@ -176,18 +176,21 @@ export default function PortfolioPage() {
             {cases.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center">Пока нет опубликованных проектов.</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {cases.map((c) => (
                   <div
                     key={c.id}
-                    className="rounded-lg border border-border overflow-hidden cursor-pointer hover:border-foreground/20 transition-colors"
+                    className="rounded-xl border border-border overflow-hidden cursor-pointer hover:border-foreground/20 transition-colors"
                     onClick={() => openCase(c)}
                   >
                     <div className="aspect-[16/10] bg-secondary">
                       {c.cover_image_url && <img src={c.cover_image_url} alt="" className="w-full h-full object-cover" />}
                     </div>
-                    <div className="p-3">
-                      <p className="text-sm font-medium text-foreground">{c.title}</p>
+                    <div className="p-4">
+                      <p className="text-base font-medium text-foreground">{c.title}</p>
+                      {(c as any).description && (
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{(c as any).description}</p>
+                      )}
                     </div>
                   </div>
                 ))}

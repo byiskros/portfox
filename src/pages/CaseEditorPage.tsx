@@ -249,23 +249,33 @@ export default function CaseEditorPage() {
           onFocus={(e) => autoResizeTextarea(e.target)}
         />
 
-        {/* Cover image (only if set) */}
-        {caseData.cover_image_url && (
-          <div className="mb-12 relative group/cover">
-            <img src={caseData.cover_image_url} alt="" className="w-full rounded-lg" />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover/cover:opacity-100 transition-opacity rounded-lg">
-              <div className="flex gap-2">
-                <ImageUpload onUpload={handleCoverUpload} loading={saving} className="px-4 py-2 bg-white/90 rounded-lg text-sm font-medium text-foreground hover:bg-white transition-colors" />
-                <button
-                  onClick={() => saveCase({ cover_image_url: null })}
-                  className="px-4 py-2 bg-white/90 rounded-lg text-sm font-medium text-destructive hover:bg-white transition-colors"
-                >
-                  Удалить
-                </button>
+        {/* Cover image for portfolio card */}
+        <div className="mb-10">
+          <label className="text-xs text-muted-foreground mb-2 block">Обложка (для карточки на главной)</label>
+          {caseData.cover_image_url ? (
+            <div className="relative group/cover">
+              <img src={caseData.cover_image_url} alt="" className="w-full rounded-lg aspect-[16/10] object-cover" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover/cover:opacity-100 transition-opacity rounded-lg">
+                <div className="flex gap-2">
+                  <ImageUpload onUpload={handleCoverUpload} loading={saving} className="px-4 py-2 bg-white/90 rounded-lg text-sm font-medium text-foreground hover:bg-white transition-colors" />
+                  <button
+                    onClick={() => saveCase({ cover_image_url: null })}
+                    className="px-4 py-2 bg-white/90 rounded-lg text-sm font-medium text-destructive hover:bg-white transition-colors"
+                  >
+                    Удалить
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <ImageUpload
+              onUpload={handleCoverUpload}
+              loading={saving}
+              label="Загрузить обложку"
+              className="aspect-[16/10] rounded-lg"
+            />
+          )}
+        </div>
 
         {/* Blocks */}
         <div>
