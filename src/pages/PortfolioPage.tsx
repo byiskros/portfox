@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
-import { ExternalLink } from 'lucide-react';
+import { Send, Linkedin, Mail, Phone, ExternalLink } from 'lucide-react';
 
 type Profile = Tables<'profiles'>;
 type Case = Tables<'cases'>;
@@ -70,25 +70,41 @@ export default function PortfolioPage() {
   if (loading) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Загрузка…</div>;
   if (!profile) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Не найдено</div>;
 
-  const AuthorCard = ({ className = '' }: { className?: string }) => (
-    <div className={`flex items-center gap-3 ${className}`}>
-      {profile!.avatar_url && (
-        <img src={profile!.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
-      )}
-      <div>
-        <p className="text-sm font-medium text-foreground">{profile!.name || 'Без имени'}</p>
-        {profile!.role && <p className="text-xs text-muted-foreground">{profile!.role}</p>}
+  const p = profile as any;
+
+  const contactItems = [
+    p.telegram && { icon: Send, label: p.telegram.startsWith('http') ? 'Telegram' : p.telegram, href: p.telegram.startsWith('http') ? p.telegram : `https://t.me/${p.telegram.replace('@', '')}` },
+    p.linkedin && { icon: Linkedin, label: 'LinkedIn', href: p.linkedin.startsWith('http') ? p.linkedin : `https://linkedin.com/in/${p.linkedin}` },
+    profile.email && { icon: Mail, label: profile.email, href: `mailto:${profile.email}` },
+    p.phone && { icon: Phone, label: p.phone, href: `tel:${p.phone.replace(/[^+\d]/g, '')}` },
+    p.custom_link && { icon: ExternalLink, label: (() => { try { return new URL(p.custom_link).hostname; } catch { return p.custom_link; } })(), href: p.custom_link },
+  ].filter(Boolean) as { icon: any; label: string; href: string }[];
+
+  const ContactLinks = ({ className = '' }: { className?: string }) => (
+    contactItems.length > 0 ? (
+      <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+        {contactItems.map((item, i) => (
+          <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+            <item.icon className="h-3 w-3" />
+            {item.label}
+          </a>
+        ))}
       </div>
-      {profile!.links && profile!.links.length > 0 && (
-        <div className="flex items-center gap-2 ml-auto">
-          {profile!.links.map((link, i) => (
-            <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-              <ExternalLink className="h-3 w-3" />
-              {new URL(link).hostname}
-            </a>
-          ))}
+    ) : null
+  );
+
+  const AuthorCard = ({ className = '' }: { className?: string }) => (
+    <div className={`${className}`}>
+      <div className="flex items-center gap-3">
+        {profile!.avatar_url && (
+          <img src={profile!.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+        )}
+        <div>
+          <p className="text-sm font-medium text-foreground">{profile!.name || 'Без имени'}</p>
+          {profile!.role && <p className="text-xs text-muted-foreground">{profile!.role}</p>}
         </div>
-      )}
+      </div>
+      <ContactLinks className="mt-2" />
     </div>
   );
 
@@ -133,16 +149,7 @@ export default function PortfolioPage() {
           <h1 className="text-xl font-semibold text-foreground">{profile.name || 'Без имени'}</h1>
           {profile.role && <p className="text-sm text-muted-foreground mt-1">{profile.role}</p>}
           {profile.bio && <p className="text-sm text-foreground/70 mt-3 max-w-md">{profile.bio}</p>}
-          {profile.links && profile.links.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-3 mt-4">
-              {profile.links.map((link, i) => (
-                <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-                  <ExternalLink className="h-3 w-3" />
-                  {new URL(link).hostname}
-                </a>
-              ))}
-            </div>
-          )}
+          <ContactLinks className="mt-4 justify-center" />
         </div>
 
         {/* Tabs */}

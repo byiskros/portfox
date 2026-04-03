@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import ImageUpload from '@/components/ImageUpload';
 import { toast } from 'sonner';
-import { Plus, X, Check, AlertCircle } from 'lucide-react';
+import { Check, AlertCircle } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
@@ -17,7 +17,6 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [newLink, setNewLink] = useState('');
   const [slugStatus, setSlugStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
   const [publicUrl, setPublicUrl] = useState('');
 
@@ -37,7 +36,7 @@ export default function ProfilePage() {
       });
   }, [user]);
 
-  const update = (field: keyof Profile, value: any) => {
+  const update = (field: string, value: any) => {
     setProfile((prev) => prev ? { ...prev, [field]: value } : prev);
   };
 
@@ -72,19 +71,6 @@ export default function ProfilePage() {
     checkSlug(clean);
   };
 
-  const addLink = () => {
-    if (!newLink.trim()) return;
-    const links = [...(profile?.links || []), newLink.trim()];
-    update('links', links);
-    setNewLink('');
-  };
-
-  const removeLink = (index: number) => {
-    const links = [...(profile?.links || [])];
-    links.splice(index, 1);
-    update('links', links);
-  };
-
   const handleAvatarUpload = async (file: File) => {
     if (!user) return;
     try {
@@ -102,6 +88,7 @@ export default function ProfilePage() {
       return;
     }
     setSaving(true);
+    const p = profile as any;
     const { error } = await supabase
       .from('profiles')
       .update({
@@ -109,9 +96,12 @@ export default function ProfilePage() {
         role: profile.role,
         bio: profile.bio,
         avatar_url: profile.avatar_url,
-        links: profile.links,
         slug: profile.slug,
-      })
+        telegram: p.telegram || '',
+        linkedin: p.linkedin || '',
+        phone: p.phone || '',
+        custom_link: p.custom_link || '',
+      } as any)
       .eq('user_id', user.id);
     if (error) toast.error('Не удалось сохранить');
     else {
@@ -124,6 +114,7 @@ export default function ProfilePage() {
   if (loading) return <div className="text-sm text-muted-foreground">Загрузка…</div>;
   if (!profile) return null;
 
+  const p = profile as any;
   const isIncomplete = !profile.name || !profile.slug;
 
   return (
@@ -173,32 +164,39 @@ export default function ProfilePage() {
           <div className="flex items-center gap-2">
             <Input value={profile.slug || ''} onChange={(e) => handleSlugChange(e.target.value)} placeholder="your-slug" />
             {slugStatus === 'available' && <Check className="h-4 w-4 text-success shrink-0" />}
-            {slugStatus === 'taken' && <X className="h-4 w-4 text-destructive shrink-0" />}
+            {slugStatus === 'taken' && <span className="text-xs text-destructive shrink-0">Занят</span>}
           </div>
           {slugStatus === 'taken' && <p className="text-xs text-destructive">Этот URL уже занят</p>}
           {publicUrl && <p className="text-xs text-muted-foreground">{publicUrl}</p>}
         </div>
 
-        <div className="space-y-2">
-          <label className="text-xs text-muted-foreground">Ссылки</label>
-          {(profile.links || []).map((link, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <Input value={link} readOnly className="text-sm" />
-              <button onClick={() => removeLink(i)} className="p-1 hover:bg-secondary rounded">
-                <X className="h-4 w-4 text-muted-foreground" />
-              </button>
-            </div>
-          ))}
-          <div className="flex gap-2">
-            <Input
-              value={newLink}
-              onChange={(e) => setNewLink(e.target.value)}
-              placeholder="https://…"
-              onKeyDown={(e) => e.key === 'Enter' && addLink()}
-            />
-            <Button variant="outline" size="sm" onClick={addLink}>
-              <Plus className="h-4 w-4" />
-            </Button>
+        {/* Contacts */}
+        <div className="space-y-3 pt-2">
+          <p className="text-sm font-medium text-foreground">Контакты</p>
+
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Telegram</label>
+            <Input value={p.telegram || ''} onChange={(e) => update('telegram', e.target.value)} placeholder="@username или https://t.me/username" />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">LinkedIn</label>
+            <Input value={p.linkedin || ''} onChange={(e) => update('linkedin', e.target.value)} placeholder="https://linkedin.com/in/..." />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Почта</label>
+            <Input type="email" value={profile.email || ''} onChange={(e) => update('email', e.target.value)} placeholder="you@example.com" />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Телефон</label>
+            <Input value={p.phone || ''} onChange={(e) => update('phone', e.target.value)} placeholder="+7 999 123-45-67" />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Другая ссылка</label>
+            <Input value={p.custom_link || ''} onChange={(e) => update('custom_link', e.target.value)} placeholder="https://…" />
           </div>
         </div>
       </div>
