@@ -296,7 +296,7 @@ export default function CaseEditorPage() {
                     onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                     onFocus={(e) => autoResizeTextarea(e.target)}
                     onKeyDown={(e) => handleKeyDown(e, block, index)}
-                    placeholder="Heading"
+                    placeholder="Заголовок"
                     rows={1}
                     className="w-full text-xl md:text-2xl font-semibold leading-[1.3] bg-transparent border-0 outline-none resize-none overflow-hidden text-foreground placeholder:text-muted-foreground/30 py-0.5"
                   />
