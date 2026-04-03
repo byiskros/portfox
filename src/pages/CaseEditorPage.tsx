@@ -64,7 +64,7 @@ export default function CaseEditorPage() {
     if (!id) return;
     setSaveStatus('saving');
     const { error } = await supabase.from('cases').update(updates).eq('id', id);
-    if (error) { toast.error('Failed to save'); setSaveStatus('idle'); }
+    if (error) { toast.error('Не удалось сохранить'); setSaveStatus('idle'); }
     else { setCaseData((prev) => prev ? { ...prev, ...updates } : prev); showSaved(); }
   };
 
