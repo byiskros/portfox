@@ -206,7 +206,7 @@ export default function CaseEditorPage() {
             {/* Publish toggle */}
             <label className="flex items-center gap-2 cursor-pointer">
               <span className="text-xs text-muted-foreground">
-                {caseData.status === 'published' ? 'Published' : 'Draft'}
+                {caseData.status === 'published' ? 'Опубликовано' : 'Черновик'}
               </span>
               <Switch
                 checked={caseData.status === 'published'}
