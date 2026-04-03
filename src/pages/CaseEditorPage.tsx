@@ -199,8 +199,8 @@ export default function CaseEditorPage() {
           <div className="flex items-center gap-4">
             {/* Save status */}
             <span className="text-xs text-muted-foreground flex items-center gap-1">
-              {saveStatus === 'saving' && <><Loader2 className="h-3 w-3 animate-spin" /> Saving…</>}
-              {saveStatus === 'saved' && <><Check className="h-3 w-3" /> Saved</>}
+              {saveStatus === 'saving' && <><Loader2 className="h-3 w-3 animate-spin" /> Сохранение…</>}
+              {saveStatus === 'saved' && <><Check className="h-3 w-3" /> Сохранено</>}
             </span>
 
             {/* Publish toggle */}
