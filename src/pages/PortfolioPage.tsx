@@ -197,22 +197,22 @@ export default function PortfolioPage() {
         )}
 
         {activeTab === 'resume' && (
-          <div className="max-w-[720px] mx-auto space-y-8">
+          <div className="max-w-[740px] mx-auto space-y-8">
             {resume && (
-              <div className="text-sm text-foreground/80 whitespace-pre-wrap leading-relaxed">{resume}</div>
+              <div className="text-lg text-muted-foreground whitespace-pre-wrap leading-[1.8]">{resume}</div>
             )}
 
             {experiences.length > 0 && (
               <div className="space-y-6">
-                <h2 className="text-lg font-semibold text-foreground">Опыт работы</h2>
+                <h2 className="text-xl md:text-2xl font-semibold text-foreground">Опыт работы</h2>
                 {experiences.map((exp) => (
                   <div key={exp.id} className="space-y-1">
                     <div className="flex items-baseline justify-between gap-4">
-                      <h3 className="text-sm font-medium text-foreground">{exp.company}</h3>
-                      {exp.period && <span className="text-xs text-muted-foreground shrink-0">{exp.period}</span>}
+                      <h3 className="text-lg font-medium text-foreground">{exp.company}</h3>
+                      {exp.period && <span className="text-sm text-muted-foreground shrink-0">{exp.period}</span>}
                     </div>
                     {exp.description && (
-                      <p className="text-sm text-foreground/70 whitespace-pre-wrap leading-relaxed">{exp.description}</p>
+                      <p className="text-lg text-muted-foreground whitespace-pre-wrap leading-[1.8]">{exp.description}</p>
                     )}
                   </div>
                 ))}
