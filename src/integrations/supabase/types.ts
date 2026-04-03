@@ -87,12 +87,16 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          custom_link: string | null
           email: string | null
           id: string
+          linkedin: string | null
           links: string[] | null
           name: string | null
+          phone: string | null
           role: string | null
           slug: string | null
+          telegram: string | null
           updated_at: string
           user_id: string
         }
@@ -100,12 +104,16 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          custom_link?: string | null
           email?: string | null
           id?: string
+          linkedin?: string | null
           links?: string[] | null
           name?: string | null
+          phone?: string | null
           role?: string | null
           slug?: string | null
+          telegram?: string | null
           updated_at?: string
           user_id: string
         }
@@ -113,12 +121,16 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          custom_link?: string | null
           email?: string | null
           id?: string
+          linkedin?: string | null
           links?: string[] | null
           name?: string | null
+          phone?: string | null
           role?: string | null
           slug?: string | null
+          telegram?: string | null
           updated_at?: string
           user_id?: string
         }
