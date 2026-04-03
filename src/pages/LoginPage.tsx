@@ -31,21 +31,21 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm space-y-8">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Portfolio</h1>
-          <p className="text-sm text-muted-foreground">Sign in to build your portfolio</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Портфолио</h1>
+          <p className="text-sm text-muted-foreground">Войдите, чтобы управлять портфолио</p>
         </div>
 
         {sent ? (
           <div className="rounded-lg border border-border bg-card p-6 text-center space-y-2">
-            <p className="text-sm font-medium text-foreground">Check your email</p>
+            <p className="text-sm font-medium text-foreground">Проверьте почту</p>
             <p className="text-sm text-muted-foreground">
-              We sent a login link to <span className="font-medium text-foreground">{email}</span>
+              Мы отправили ссылку для входа на <span className="font-medium text-foreground">{email}</span>
             </p>
             <button
               onClick={() => setSent(false)}
               className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
             >
-              Try another email
+              Попробовать другой email
             </button>
           </div>
         ) : (
@@ -60,7 +60,7 @@ export default function LoginPage() {
               className="h-10"
             />
             <Button type="submit" className="w-full h-10" disabled={loading}>
-              {loading ? 'Sending…' : 'Send login link'}
+              {loading ? 'Отправка…' : 'Отправить ссылку'}
             </Button>
           </form>
         )}

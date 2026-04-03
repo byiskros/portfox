@@ -9,7 +9,7 @@ interface ImageUploadProps {
   label?: string;
 }
 
-export default function ImageUpload({ onUpload, loading, preview, className = '', label = 'Upload image' }: ImageUploadProps) {
+export default function ImageUpload({ onUpload, loading, preview, className = '', label = 'Загрузить изображение' }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +27,7 @@ export default function ImageUpload({ onUpload, loading, preview, className = ''
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 p-6 text-muted-foreground">
           <Upload className="h-5 w-5" />
-          <span className="text-xs">{loading ? 'Uploading…' : label}</span>
+          <span className="text-xs">{loading ? 'Загрузка…' : label}</span>
         </div>
       )}
       <input

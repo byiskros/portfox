@@ -91,14 +91,14 @@ export default function ProfilePage() {
       const url = await uploadImage(file, user.id, 'avatars');
       update('avatar_url', url);
     } catch {
-      toast.error('Upload failed');
+      toast.error('Не удалось загрузить');
     }
   };
 
   const save = async () => {
     if (!profile || !user) return;
     if (slugStatus === 'taken') {
-      toast.error('Slug is already taken');
+      toast.error('Этот URL уже занят');
       return;
     }
     setSaving(true);
@@ -113,15 +113,15 @@ export default function ProfilePage() {
         slug: profile.slug,
       })
       .eq('user_id', user.id);
-    if (error) toast.error('Failed to save');
+    if (error) toast.error('Не удалось сохранить');
     else {
-      toast.success('Saved');
+      toast.success('Сохранено');
       if (profile.slug) setPublicUrl(`${window.location.origin}/${profile.slug}`);
     }
     setSaving(false);
   };
 
-  if (loading) return <div className="text-sm text-muted-foreground">Loading…</div>;
+  if (loading) return <div className="text-sm text-muted-foreground">Загрузка…</div>;
   if (!profile) return null;
 
   const isIncomplete = !profile.name || !profile.slug;
@@ -129,58 +129,58 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6 max-w-xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">Profile</h1>
+        <h1 className="text-lg font-semibold text-foreground">Профиль</h1>
         <Button onClick={save} size="sm" disabled={saving || slugStatus === 'taken'}>
-          {saving ? 'Saving…' : 'Save'}
+          {saving ? 'Сохранение…' : 'Сохранить'}
         </Button>
       </div>
 
       {isIncomplete && (
         <div className="flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/5 p-3">
           <AlertCircle className="h-4 w-4 text-warning mt-0.5 shrink-0" />
-          <p className="text-sm text-muted-foreground">Complete your profile to share your portfolio</p>
+          <p className="text-sm text-muted-foreground">Заполните профиль, чтобы поделиться портфолио</p>
         </div>
       )}
 
       <div className="space-y-4">
         <div>
-          <p className="text-xs text-muted-foreground mb-2">Avatar</p>
+          <p className="text-xs text-muted-foreground mb-2">Аватар</p>
           <ImageUpload
             onUpload={handleAvatarUpload}
             preview={profile.avatar_url}
             className="w-20 h-20 rounded-full overflow-hidden"
-            label="Upload"
+            label="Загрузить"
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Name</label>
-          <Input value={profile.name || ''} onChange={(e) => handleNameChange(e.target.value)} placeholder="Your name" />
+          <label className="text-xs text-muted-foreground">Имя</label>
+          <Input value={profile.name || ''} onChange={(e) => handleNameChange(e.target.value)} placeholder="Ваше имя" />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Role</label>
-          <Input value={profile.role || ''} onChange={(e) => update('role', e.target.value)} placeholder="e.g. Product Designer" />
+          <label className="text-xs text-muted-foreground">Роль</label>
+          <Input value={profile.role || ''} onChange={(e) => update('role', e.target.value)} placeholder="Например, Продуктовый дизайнер" />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Bio</label>
-          <Textarea value={profile.bio || ''} onChange={(e) => update('bio', e.target.value)} placeholder="A short bio…" className="resize-none min-h-[80px]" />
+          <label className="text-xs text-muted-foreground">О себе</label>
+          <Textarea value={profile.bio || ''} onChange={(e) => update('bio', e.target.value)} placeholder="Краткое описание…" className="resize-none min-h-[80px]" />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Slug</label>
+          <label className="text-xs text-muted-foreground">URL</label>
           <div className="flex items-center gap-2">
             <Input value={profile.slug || ''} onChange={(e) => handleSlugChange(e.target.value)} placeholder="your-slug" />
             {slugStatus === 'available' && <Check className="h-4 w-4 text-success shrink-0" />}
             {slugStatus === 'taken' && <X className="h-4 w-4 text-destructive shrink-0" />}
           </div>
-          {slugStatus === 'taken' && <p className="text-xs text-destructive">This slug is already taken</p>}
+          {slugStatus === 'taken' && <p className="text-xs text-destructive">Этот URL уже занят</p>}
           {publicUrl && <p className="text-xs text-muted-foreground">{publicUrl}</p>}
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs text-muted-foreground">Links</label>
+          <label className="text-xs text-muted-foreground">Ссылки</label>
           {(profile.links || []).map((link, i) => (
             <div key={i} className="flex items-center gap-2">
               <Input value={link} readOnly className="text-sm" />

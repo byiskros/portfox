@@ -9,7 +9,6 @@ export default function BlockInserter({ onAdd }: { onAdd: (type: BlockType) => v
 
   return (
     <div className="relative flex items-center justify-center h-2 group/inserter">
-      {/* Hover line */}
       <div className="absolute inset-x-0 top-1/2 h-px bg-transparent group-hover/inserter:bg-border transition-colors" />
 
       {!open && (
@@ -23,13 +22,13 @@ export default function BlockInserter({ onAdd }: { onAdd: (type: BlockType) => v
       {open && (
         <div className="absolute z-10 flex items-center gap-1 bg-background border border-border rounded-lg px-1 py-1 shadow-sm">
           <button onClick={() => { onAdd('heading'); setOpen(false); }} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
-            <Type className="h-3.5 w-3.5" /> Heading
+            <Type className="h-3.5 w-3.5" /> Заголовок
           </button>
           <button onClick={() => { onAdd('text'); setOpen(false); }} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
-            <AlignLeft className="h-3.5 w-3.5" /> Text
+            <AlignLeft className="h-3.5 w-3.5" /> Текст
           </button>
           <button onClick={() => { onAdd('image'); setOpen(false); }} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
-            <ImageIcon className="h-3.5 w-3.5" /> Image
+            <ImageIcon className="h-3.5 w-3.5" /> Картинка
           </button>
         </div>
       )}

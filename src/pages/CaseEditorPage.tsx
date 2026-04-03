@@ -64,7 +64,7 @@ export default function CaseEditorPage() {
     if (!id) return;
     setSaveStatus('saving');
     const { error } = await supabase.from('cases').update(updates).eq('id', id);
-    if (error) { toast.error('Failed to save'); setSaveStatus('idle'); }
+    if (error) { toast.error('Не удалось сохранить'); setSaveStatus('idle'); }
     else { setCaseData((prev) => prev ? { ...prev, ...updates } : prev); showSaved(); }
   };
 
@@ -74,9 +74,9 @@ export default function CaseEditorPage() {
     try {
       const url = await uploadImage(file, user.id, 'covers');
       await saveCase({ cover_image_url: url });
-      toast.success('Cover uploaded');
+      toast.success('Обложка загружена');
     } catch {
-      toast.error('Upload failed');
+      toast.error('Не удалось загрузить');
     }
     setSaving(false);
   };
@@ -92,7 +92,7 @@ export default function CaseEditorPage() {
       .insert({ case_id: id, type, sort_order: newOrder })
       .select()
       .single();
-    if (error) { toast.error('Failed to add block'); return; }
+    if (error) { toast.error('Не удалось добавить блок'); return; }
     if (data) {
       const updated = [...shifted.slice(0, newOrder), data, ...shifted.slice(newOrder)];
       setBlocks(updated.map((b, i) => ({ ...b, sort_order: i })));
@@ -114,7 +114,7 @@ export default function CaseEditorPage() {
       .insert({ case_id: id, type, sort_order: maxOrder + 1 })
       .select()
       .single();
-    if (error) toast.error('Failed to add block');
+    if (error) toast.error('Не удалось добавить блок');
     else if (data) {
       setBlocks((prev) => [...prev, data]);
       setTimeout(() => {
@@ -128,7 +128,7 @@ export default function CaseEditorPage() {
     setBlocks((prev) => prev.map((b) => (b.id === blockId ? { ...b, content } : b)));
     setSaveStatus('saving');
     const { error } = await supabase.from('blocks').update({ content }).eq('id', blockId);
-    if (error) { toast.error('Failed to save'); setSaveStatus('idle'); }
+    if (error) { toast.error('Не удалось сохранить'); setSaveStatus('idle'); }
     else showSaved();
   };
 
@@ -160,7 +160,7 @@ export default function CaseEditorPage() {
       const url = await uploadImage(file, user.id, 'blocks');
       updateBlock(blockId, url);
     } catch {
-      toast.error('Upload failed');
+      toast.error('Не удалось загрузить');
     }
   };
 
@@ -168,7 +168,7 @@ export default function CaseEditorPage() {
     if (!caseData) return;
     const newStatus = caseData.status === 'published' ? 'draft' : 'published';
     await saveCase({ status: newStatus });
-    toast.success(newStatus === 'published' ? 'Published!' : 'Unpublished');
+    toast.success(newStatus === 'published' ? 'Опубликовано!' : 'Снято с публикации');
   };
 
   const autoResizeTextarea = (el: HTMLTextAreaElement) => {
@@ -183,8 +183,8 @@ export default function CaseEditorPage() {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Loading…</div>;
-  if (!caseData) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Not found</div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Загрузка…</div>;
+  if (!caseData) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Не найдено</div>;
 
   return (
     <div className="min-h-screen bg-background">
@@ -193,20 +193,20 @@ export default function CaseEditorPage() {
         <div className="max-w-[740px] mx-auto px-4 flex items-center justify-between h-12">
           <button onClick={() => navigate('/dashboard')} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4" />
-            Back
+            Назад
           </button>
 
           <div className="flex items-center gap-4">
             {/* Save status */}
             <span className="text-xs text-muted-foreground flex items-center gap-1">
-              {saveStatus === 'saving' && <><Loader2 className="h-3 w-3 animate-spin" /> Saving…</>}
-              {saveStatus === 'saved' && <><Check className="h-3 w-3" /> Saved</>}
+              {saveStatus === 'saving' && <><Loader2 className="h-3 w-3 animate-spin" /> Сохранение…</>}
+              {saveStatus === 'saved' && <><Check className="h-3 w-3" /> Сохранено</>}
             </span>
 
             {/* Publish toggle */}
             <label className="flex items-center gap-2 cursor-pointer">
               <span className="text-xs text-muted-foreground">
-                {caseData.status === 'published' ? 'Published' : 'Draft'}
+                {caseData.status === 'published' ? 'Опубликовано' : 'Черновик'}
               </span>
               <Switch
                 checked={caseData.status === 'published'}
@@ -228,7 +228,7 @@ export default function CaseEditorPage() {
             autoResizeTextarea(e.target);
           }}
           onBlur={() => saveCase({ title: caseData.title })}
-          placeholder="Untitled"
+          placeholder="Без названия"
           rows={1}
           className="w-full text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] bg-transparent border-0 outline-none resize-none overflow-hidden text-foreground placeholder:text-muted-foreground/30 mb-3"
           onFocus={(e) => autoResizeTextarea(e.target)}
@@ -243,7 +243,7 @@ export default function CaseEditorPage() {
             autoResizeTextarea(e.target);
           }}
           onBlur={() => saveCase({ description: (caseData as any).description || '' } as any)}
-          placeholder="Short description…"
+          placeholder="Краткое описание…"
           rows={1}
           className="w-full text-lg leading-[1.6] bg-transparent border-0 outline-none resize-none overflow-hidden text-muted-foreground placeholder:text-muted-foreground/30 mb-10"
           onFocus={(e) => autoResizeTextarea(e.target)}
@@ -296,7 +296,7 @@ export default function CaseEditorPage() {
                     onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                     onFocus={(e) => autoResizeTextarea(e.target)}
                     onKeyDown={(e) => handleKeyDown(e, block, index)}
-                    placeholder="Heading"
+                    placeholder="Заголовок"
                     rows={1}
                     className="w-full text-xl md:text-2xl font-semibold leading-[1.3] bg-transparent border-0 outline-none resize-none overflow-hidden text-foreground placeholder:text-muted-foreground/30 py-0.5"
                   />
@@ -308,7 +308,7 @@ export default function CaseEditorPage() {
                     onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                     onFocus={(e) => autoResizeTextarea(e.target)}
                     onKeyDown={(e) => handleKeyDown(e, block, index)}
-                    placeholder="Write something…"
+                    placeholder="Напишите что-нибудь…"
                     rows={1}
                     className="w-full text-lg leading-[1.8] bg-transparent border-0 outline-none resize-none overflow-hidden text-muted-foreground placeholder:text-muted-foreground/30 py-0.5"
                   />
@@ -333,11 +333,11 @@ export default function CaseEditorPage() {
           {blocks.length === 0 && (
             <div className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
               <Plus className="h-4 w-4" />
-              <button onClick={() => addBlock('heading')} className="text-sm hover:text-foreground transition-colors">Heading</button>
+              <button onClick={() => addBlock('heading')} className="text-sm hover:text-foreground transition-colors">Заголовок</button>
               <span className="text-border">·</span>
-              <button onClick={() => addBlock('text')} className="text-sm hover:text-foreground transition-colors">Text</button>
+              <button onClick={() => addBlock('text')} className="text-sm hover:text-foreground transition-colors">Текст</button>
               <span className="text-border">·</span>
-              <button onClick={() => addBlock('image')} className="text-sm hover:text-foreground transition-colors">Image</button>
+              <button onClick={() => addBlock('image')} className="text-sm hover:text-foreground transition-colors">Картинка</button>
             </div>
           )}
         </div>
