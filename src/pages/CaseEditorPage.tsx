@@ -228,7 +228,7 @@ export default function CaseEditorPage() {
             autoResizeTextarea(e.target);
           }}
           onBlur={() => saveCase({ title: caseData.title })}
-          placeholder="Untitled"
+          placeholder="Без названия"
           rows={1}
           className="w-full text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] bg-transparent border-0 outline-none resize-none overflow-hidden text-foreground placeholder:text-muted-foreground/30 mb-3"
           onFocus={(e) => autoResizeTextarea(e.target)}
