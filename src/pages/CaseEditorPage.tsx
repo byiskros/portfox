@@ -183,8 +183,8 @@ export default function CaseEditorPage() {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Loading…</div>;
-  if (!caseData) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Not found</div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Загрузка…</div>;
+  if (!caseData) return <div className="flex items-center justify-center min-h-screen text-sm text-muted-foreground">Не найдено</div>;
 
   return (
     <div className="min-h-screen bg-background">
