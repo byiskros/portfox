@@ -193,7 +193,7 @@ export default function CaseEditorPage() {
         <div className="max-w-[740px] mx-auto px-4 flex items-center justify-between h-12">
           <button onClick={() => navigate('/dashboard')} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4" />
-            Back
+            Назад
           </button>
 
           <div className="flex items-center gap-4">
