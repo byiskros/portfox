@@ -82,10 +82,10 @@ export default function PortfolioPage() {
 
   const ContactLinks = ({ className = '' }: { className?: string }) => (
     contactItems.length > 0 ? (
-      <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+      <div className={`flex flex-wrap items-center gap-4 ${className}`}>
         {contactItems.map((item, i) => (
-          <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-            <item.icon className="h-3 w-3" />
+          <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors">
+            <item.icon className="h-4 w-4" />
             {item.label}
           </a>
         ))}
