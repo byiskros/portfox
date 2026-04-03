@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
 import { ExternalLink } from 'lucide-react';
@@ -8,12 +8,20 @@ type Profile = Tables<'profiles'>;
 type Case = Tables<'cases'>;
 type Block = Tables<'blocks'>;
 
+interface WorkExperience {
+  id: string;
+  company: string;
+  period: string;
+  description: string;
+  sort_order: number;
+}
+
 export default function PortfolioPage() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [cases, setCases] = useState<Case[]>([]);
   const [resume, setResume] = useState<string | null>(null);
+  const [experiences, setExperiences] = useState<WorkExperience[]>([]);
   const [activeTab, setActiveTab] = useState<'projects' | 'resume'>('projects');
   const [loading, setLoading] = useState(true);
   const [selectedCase, setSelectedCase] = useState<string | null>(null);
@@ -31,19 +39,20 @@ export default function PortfolioPage() {
         if (!prof) { setLoading(false); return; }
         setProfile(prof);
 
-        const [casesRes, resumeRes] = await Promise.all([
+        const [casesRes, resumeRes, expRes] = await Promise.all([
           supabase.from('cases').select('*').eq('user_id', prof.user_id).eq('status', 'published').order('created_at', { ascending: false }),
           supabase.from('resumes').select('content').eq('user_id', prof.user_id).maybeSingle(),
+          supabase.from('work_experiences').select('*').eq('user_id', prof.user_id).order('sort_order'),
         ]);
         setCases(casesRes.data || []);
         setResume(resumeRes.data?.content || null);
+        setExperiences(expRes.data || []);
         setLoading(false);
       });
   }, [slug]);
 
   const openCase = async (c: Case) => {
     setSelectedCase(c.id);
-    // Fetch fresh case data and blocks
     const [freshCase, blocksRes] = await Promise.all([
       supabase.from('cases').select('*').eq('id', c.id).single(),
       supabase.from('blocks').select('*').eq('case_id', c.id).order('sort_order'),
@@ -58,8 +67,8 @@ export default function PortfolioPage() {
     setCaseData(null);
   };
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Loading…</div>;
-  if (!profile) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Not found</div>;
+  if (loading) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Загрузка…</div>;
+  if (!profile) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Не найдено</div>;
 
   const AuthorCard = ({ className = '' }: { className?: string }) => (
     <div className={`flex items-center gap-3 ${className}`}>
@@ -67,7 +76,7 @@ export default function PortfolioPage() {
         <img src={profile!.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
       )}
       <div>
-        <p className="text-sm font-medium text-foreground">{profile!.name || 'Unnamed'}</p>
+        <p className="text-sm font-medium text-foreground">{profile!.name || 'Без имени'}</p>
         {profile!.role && <p className="text-xs text-muted-foreground">{profile!.role}</p>}
       </div>
       {profile!.links && profile!.links.length > 0 && (
@@ -88,7 +97,7 @@ export default function PortfolioPage() {
       <div className="min-h-screen bg-background">
         <div className="max-w-[740px] mx-auto px-4 sm:px-6 py-8">
           <button onClick={closeCase} className="text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
-            ← Back to portfolio
+            ← Назад к портфолио
           </button>
           <AuthorCard className="mb-6" />
           <h1 className="text-[2rem] md:text-[2.25rem] font-bold leading-[1.2] text-foreground mb-3">{caseData?.title}</h1>
@@ -105,7 +114,6 @@ export default function PortfolioPage() {
               </div>
             ))}
           </div>
-          {/* Author footer */}
           <div className="mt-16 pt-8 border-t border-border">
             <AuthorCard />
           </div>
@@ -122,7 +130,7 @@ export default function PortfolioPage() {
           {profile.avatar_url && (
             <img src={profile.avatar_url} alt="" className="w-20 h-20 rounded-full object-cover mb-4" />
           )}
-          <h1 className="text-xl font-semibold text-foreground">{profile.name || 'Unnamed'}</h1>
+          <h1 className="text-xl font-semibold text-foreground">{profile.name || 'Без имени'}</h1>
           {profile.role && <p className="text-sm text-muted-foreground mt-1">{profile.role}</p>}
           {profile.bio && <p className="text-sm text-foreground/70 mt-3 max-w-md">{profile.bio}</p>}
           {profile.links && profile.links.length > 0 && (
@@ -143,13 +151,13 @@ export default function PortfolioPage() {
             onClick={() => setActiveTab('projects')}
             className={`pb-2 text-sm transition-colors ${activeTab === 'projects' ? 'text-foreground border-b-2 border-foreground font-medium' : 'text-muted-foreground hover:text-foreground'}`}
           >
-            Projects
+            Проекты
           </button>
           <button
             onClick={() => setActiveTab('resume')}
             className={`pb-2 text-sm transition-colors ${activeTab === 'resume' ? 'text-foreground border-b-2 border-foreground font-medium' : 'text-muted-foreground hover:text-foreground'}`}
           >
-            Resume
+            Резюме
           </button>
         </div>
 
@@ -157,7 +165,7 @@ export default function PortfolioPage() {
         {activeTab === 'projects' && (
           <div>
             {cases.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center">No published projects yet.</p>
+              <p className="text-sm text-muted-foreground text-center">Пока нет опубликованных проектов.</p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {cases.map((c) => (
@@ -180,11 +188,30 @@ export default function PortfolioPage() {
         )}
 
         {activeTab === 'resume' && (
-          <div className="max-w-[720px] mx-auto">
-            {resume ? (
+          <div className="max-w-[720px] mx-auto space-y-8">
+            {resume && (
               <div className="text-sm text-foreground/80 whitespace-pre-wrap leading-relaxed">{resume}</div>
-            ) : (
-              <p className="text-sm text-muted-foreground">No resume added yet.</p>
+            )}
+
+            {experiences.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="text-lg font-semibold text-foreground">Опыт работы</h2>
+                {experiences.map((exp) => (
+                  <div key={exp.id} className="space-y-1">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <h3 className="text-sm font-medium text-foreground">{exp.company}</h3>
+                      {exp.period && <span className="text-xs text-muted-foreground shrink-0">{exp.period}</span>}
+                    </div>
+                    {exp.description && (
+                      <p className="text-sm text-foreground/70 whitespace-pre-wrap leading-relaxed">{exp.description}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {!resume && experiences.length === 0 && (
+              <p className="text-sm text-muted-foreground">Резюме ещё не добавлено.</p>
             )}
           </div>
         )}
