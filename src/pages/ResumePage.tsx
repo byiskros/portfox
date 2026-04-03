@@ -184,10 +184,11 @@ export default function ResumePage() {
             <div className="space-y-1">
               <label className="text-xs text-muted-foreground">Описание</label>
               <Textarea
+                ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
                 value={exp.description}
-                onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
+                onChange={(e) => { updateExperience(exp.id, 'description', e.target.value); e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }}
                 placeholder="Чем вы занимались…"
-                className="min-h-[80px] resize-none"
+                className="min-h-[80px] resize-none overflow-hidden"
               />
             </div>
           </div>
