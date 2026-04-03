@@ -308,7 +308,7 @@ export default function CaseEditorPage() {
                     onChange={(e) => { updateBlock(block.id, e.target.value); autoResizeTextarea(e.target); }}
                     onFocus={(e) => autoResizeTextarea(e.target)}
                     onKeyDown={(e) => handleKeyDown(e, block, index)}
-                    placeholder="Write something…"
+                    placeholder="Напишите что-нибудь…"
                     rows={1}
                     className="w-full text-lg leading-[1.8] bg-transparent border-0 outline-none resize-none overflow-hidden text-muted-foreground placeholder:text-muted-foreground/30 py-0.5"
                   />
