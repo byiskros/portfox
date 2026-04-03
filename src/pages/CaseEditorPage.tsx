@@ -333,11 +333,11 @@ export default function CaseEditorPage() {
           {blocks.length === 0 && (
             <div className="flex items-center justify-center gap-3 py-16 text-muted-foreground">
               <Plus className="h-4 w-4" />
-              <button onClick={() => addBlock('heading')} className="text-sm hover:text-foreground transition-colors">Heading</button>
+              <button onClick={() => addBlock('heading')} className="text-sm hover:text-foreground transition-colors">Заголовок</button>
               <span className="text-border">·</span>
-              <button onClick={() => addBlock('text')} className="text-sm hover:text-foreground transition-colors">Text</button>
+              <button onClick={() => addBlock('text')} className="text-sm hover:text-foreground transition-colors">Текст</button>
               <span className="text-border">·</span>
-              <button onClick={() => addBlock('image')} className="text-sm hover:text-foreground transition-colors">Image</button>
+              <button onClick={() => addBlock('image')} className="text-sm hover:text-foreground transition-colors">Картинка</button>
             </div>
           )}
         </div>
