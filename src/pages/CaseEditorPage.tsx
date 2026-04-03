@@ -168,7 +168,7 @@ export default function CaseEditorPage() {
     if (!caseData) return;
     const newStatus = caseData.status === 'published' ? 'draft' : 'published';
     await saveCase({ status: newStatus });
-    toast.success(newStatus === 'published' ? 'Published!' : 'Unpublished');
+    toast.success(newStatus === 'published' ? 'Опубликовано!' : 'Снято с публикации');
   };
 
   const autoResizeTextarea = (el: HTMLTextAreaElement) => {
