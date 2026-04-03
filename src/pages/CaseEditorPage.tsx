@@ -74,9 +74,9 @@ export default function CaseEditorPage() {
     try {
       const url = await uploadImage(file, user.id, 'covers');
       await saveCase({ cover_image_url: url });
-      toast.success('Cover uploaded');
+      toast.success('Обложка загружена');
     } catch {
-      toast.error('Upload failed');
+      toast.error('Не удалось загрузить');
     }
     setSaving(false);
   };
