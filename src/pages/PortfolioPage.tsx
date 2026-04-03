@@ -82,10 +82,10 @@ export default function PortfolioPage() {
 
   const ContactLinks = ({ className = '' }: { className?: string }) => (
     contactItems.length > 0 ? (
-      <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+      <div className={`flex flex-wrap items-center gap-4 ${className}`}>
         {contactItems.map((item, i) => (
-          <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
-            <item.icon className="h-3 w-3" />
+          <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors">
+            <item.icon className="h-4 w-4" />
             {item.label}
           </a>
         ))}
@@ -142,14 +142,14 @@ export default function PortfolioPage() {
     <div className="min-h-screen bg-background">
       <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-12">
         {/* Header */}
-        <div className="flex flex-col items-center text-center mb-10">
+        <div className="flex flex-col items-center text-center mb-12">
           {profile.avatar_url && (
-            <img src={profile.avatar_url} alt="" className="w-20 h-20 rounded-full object-cover mb-4" />
+            <img src={profile.avatar_url} alt="" className="w-28 h-28 rounded-full object-cover mb-6" />
           )}
-          <h1 className="text-xl font-semibold text-foreground">{profile.name || 'Без имени'}</h1>
-          {profile.role && <p className="text-sm text-muted-foreground mt-1">{profile.role}</p>}
-          {profile.bio && <p className="text-sm text-foreground/70 mt-3 max-w-md">{profile.bio}</p>}
-          <ContactLinks className="mt-4 justify-center" />
+          <h1 className="text-3xl font-bold text-foreground">{profile.name || 'Без имени'}</h1>
+          {profile.role && <p className="text-base text-muted-foreground mt-2">{profile.role}</p>}
+          {profile.bio && <p className="text-lg text-foreground/70 mt-4 max-w-lg leading-relaxed">{profile.bio}</p>}
+          <ContactLinks className="mt-5 justify-center" />
         </div>
 
         {/* Tabs */}
