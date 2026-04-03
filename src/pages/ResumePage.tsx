@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Plus, Trash2, Check, Loader2 } from 'lucide-react';
+import PeriodPicker from '@/components/PeriodPicker';
 
 interface WorkExperience {
   id: string;
@@ -172,10 +173,9 @@ export default function ResumePage() {
               </div>
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Период</label>
-                <Input
+                <PeriodPicker
                   value={exp.period}
-                  onChange={(e) => updateExperience(exp.id, 'period', e.target.value)}
-                  placeholder="Янв 2022 — Дек 2023"
+                  onChange={(v) => updateExperience(exp.id, 'period', v)}
                 />
               </div>
             </div>
