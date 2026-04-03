@@ -30,19 +30,19 @@ export default function DashboardLayout() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
         <div className="max-w-[1100px] mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-          <span className="text-sm font-semibold tracking-tight text-foreground">Portfolio</span>
+          <span className="text-sm font-semibold tracking-tight text-foreground">Портфолио</span>
           <nav className="flex items-center gap-1">
             <NavLink to="/dashboard" end className={linkClass}>
               <Layers className="h-4 w-4" />
-              <span className="hidden sm:inline">Projects</span>
+              <span className="hidden sm:inline">Проекты</span>
             </NavLink>
             <NavLink to="/resume" className={linkClass}>
               <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Resume</span>
+              <span className="hidden sm:inline">Резюме</span>
             </NavLink>
             <NavLink to="/profile" className={linkClass}>
               <User className="h-4 w-4" />
-              <span className="hidden sm:inline">Profile</span>
+              <span className="hidden sm:inline">Профиль</span>
             </NavLink>
             {slug ? (
               <a
@@ -52,12 +52,12 @@ export default function DashboardLayout() {
                 className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors ml-1"
               >
                 <ExternalLink className="h-4 w-4" />
-                <span className="hidden sm:inline">View portfolio</span>
+                <span className="hidden sm:inline">Портфолио</span>
               </a>
             ) : (
-              <span className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm text-muted-foreground/50 ml-1 cursor-default" title="Set your profile URL first">
+              <span className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm text-muted-foreground/50 ml-1 cursor-default" title="Сначала укажите URL профиля">
                 <ExternalLink className="h-4 w-4" />
-                <span className="hidden sm:inline">View portfolio</span>
+                <span className="hidden sm:inline">Портфолио</span>
               </span>
             )}
             <button

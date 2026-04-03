@@ -39,7 +39,7 @@ export default function ProjectsPage() {
       .select()
       .single();
     if (error) {
-      toast.error('Failed to create project');
+      toast.error('Не удалось создать проект');
       return;
     }
     navigate(`/case/${data.id}`);
@@ -49,32 +49,32 @@ export default function ProjectsPage() {
     if (!deleteId) return;
     const { error } = await supabase.from('cases').delete().eq('id', deleteId);
     if (error) {
-      toast.error('Failed to delete');
+      toast.error('Не удалось удалить');
     } else {
       setCases((prev) => prev.filter((c) => c.id !== deleteId));
-      toast.success('Project deleted');
+      toast.success('Проект удалён');
     }
     setDeleteId(null);
   };
 
-  if (loading) return <div className="text-sm text-muted-foreground">Loading…</div>;
+  if (loading) return <div className="text-sm text-muted-foreground">Загрузка…</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">Projects</h1>
+        <h1 className="text-lg font-semibold text-foreground">Проекты</h1>
         <Button onClick={createCase} size="sm" className="gap-1.5">
           <Plus className="h-4 w-4" />
-          Create case
+          Создать кейс
         </Button>
       </div>
 
       {cases.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground mb-4">Create your first case</p>
+          <p className="text-sm text-muted-foreground mb-4">Создайте свой первый кейс</p>
           <Button onClick={createCase} variant="outline" size="sm" className="gap-1.5">
             <Plus className="h-4 w-4" />
-            New case
+            Новый кейс
           </Button>
         </div>
       ) : (
@@ -94,7 +94,7 @@ export default function ProjectsPage() {
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{c.title}</p>
                   <span className={`text-xs ${c.status === 'published' ? 'text-success' : 'text-muted-foreground'}`}>
-                    {c.status}
+                    {c.status === 'published' ? 'Опубликован' : 'Черновик'}
                   </span>
                 </div>
                 <DropdownMenu>
@@ -109,7 +109,7 @@ export default function ProjectsPage() {
                       className="text-destructive focus:text-destructive"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
+                      Удалить
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -122,13 +122,13 @@ export default function ProjectsPage() {
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete project?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+            <AlertDialogTitle>Удалить проект?</AlertDialogTitle>
+            <AlertDialogDescription>Это действие нельзя отменить.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
             <AlertDialogAction onClick={deleteCase} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Delete
+              Удалить
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

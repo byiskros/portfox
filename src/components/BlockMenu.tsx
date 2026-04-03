@@ -56,7 +56,7 @@ export default function BlockMenu({
                   currentType === 'heading' ? 'text-foreground bg-accent' : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                 }`}
               >
-                <Type className="h-3.5 w-3.5" /> Heading
+                <Type className="h-3.5 w-3.5" /> Заголовок
               </button>
               <button
                 onClick={() => { onSwitchType('text'); setOpen(false); }}
@@ -64,7 +64,7 @@ export default function BlockMenu({
                   currentType === 'text' ? 'text-foreground bg-accent' : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                 }`}
               >
-                <AlignLeft className="h-3.5 w-3.5" /> Text
+                <AlignLeft className="h-3.5 w-3.5" /> Текст
               </button>
               <div className="h-px bg-border my-1" />
             </>
@@ -74,21 +74,21 @@ export default function BlockMenu({
             disabled={!canMoveUp}
             className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
-            <ChevronUp className="h-3.5 w-3.5" /> Move up
+            <ChevronUp className="h-3.5 w-3.5" /> Вверх
           </button>
           <button
             onClick={() => { onMoveDown(); setOpen(false); }}
             disabled={!canMoveDown}
             className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
-            <ChevronDown className="h-3.5 w-3.5" /> Move down
+            <ChevronDown className="h-3.5 w-3.5" /> Вниз
           </button>
           <div className="h-px bg-border my-1" />
           <button
             onClick={() => { onDelete(); setOpen(false); }}
             className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
           >
-            <Trash2 className="h-3.5 w-3.5" /> Delete
+            <Trash2 className="h-3.5 w-3.5" /> Удалить
           </button>
         </div>
       )}
